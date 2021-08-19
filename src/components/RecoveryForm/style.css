@@ -1,0 +1,18 @@
+section.Component-Login {
+    text-align: center;
+    width: 30rem;
+    margin: 0 auto;
+}
+
+.p-field {
+    padding: 0.5rem 1rem;
+    box-sizing: border-box;
+}
+
+button {
+    box-sizing: border-box;
+}
+
+.button-login {
+    width: 100%;
+}
