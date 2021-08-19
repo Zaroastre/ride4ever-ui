@@ -9,3 +9,38 @@ header {
     display: flex;
     justify-content: space-between;
 }
+
+nav {
+    position: relative;
+    color: rgba(255,255,255,1);
+    width: 15rem;
+    text-align: center;
+    cursor: pointer;
+    background: rgba(0,0,0,1);
+}
+
+nav > span {
+    display: block;
+    padding: 25px 0;
+    height: 5rem;
+    font-size: bolder;
+}
+
+nav > i {
+    display: block;
+    padding-left: 20px;
+}
+
+nav:hover ul {
+    display: block;
+}
+ul {
+    display: none;
+}
+
+ul a {
+    display: block;
+    text-decoration: none;
+    color: rgba(255,255,255,1);
+    padding: 1rem;
+}
