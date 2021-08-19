@@ -1,14 +1,20 @@
 export default class Motorbike {
   constructor() {
     this.identifier = 0;
-    this.licensePlate = null;
-    this.mileage = null;
     this.brand = null;
     this.model = null;
-    this.engineDisplacement = null;
-    this.year = null;
-    this.fuelTankSize = null;
+    this.engineDisplacement = 0;
+    this.year = 0;
+
     this.type = null;
+    this.color = null;
+    this.fuelTankSize = 0;
+    this.mileage = 0;
+
+    this.licensePlate = null;
+    this.isRestrained = false;
+
+    this.picture = null;
   }
 
   static parse(json) {
@@ -28,10 +34,13 @@ export default class Motorbike {
         entity.mileage = json.mileage;
         entity.brand = json.brand;
         entity.model = json.model;
+        entity.color = json.color;
         entity.engineDisplacement = json.engineDisplacement;
         entity.year = json.year;
         entity.fuelTankSize = json.fuelTankSize;
         entity.type = json.type;
+        entity.isRestrained = json.isRestrained;
+        entity.picture = json.picture;
       }
     }
     return entity;
