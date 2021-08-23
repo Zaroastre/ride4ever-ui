@@ -1,29 +1,83 @@
+/* eslint-disable max-len */
 import React, {
   useState,
+  useEffect,
 } from 'react';
 import { withRouter } from 'react-router';
-
+import { useHistory } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
-// import { Dialog } from 'primereact/dialog';
+import { confirmDialog } from 'primereact/confirmdialog';
+import { InputTextarea } from 'primereact/inputtextarea';
 import { Calendar } from 'primereact/calendar';
+import RoadtripService from '../services/roadtripService';
+import RoadTrip from '../entities/roadtrip';
 
 function OrganizePage() {
+  const history = useHistory();
   const [title, setTitle] = useState(null);
   const [description, setDescription] = useState(null);
   const [maximumBikers, setMaximumBikers] = useState(0);
-  const [roadtripType/* , setRoadtripType */] = useState(null);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [roadtripType, setRoadtripType] = useState(null);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(startDate);
   const [startPlace, setStartPlace] = useState(null);
   const [endPlace, setEndPlace] = useState(null);
   // const [places, setPlaces] = useState([]);
   // const [kilometersAverage, setKilometersAverage] = useState(0);
 
-  const confirm = () => {
+  const [roadtripsTypes, setRoadtripsTypes] = useState([]);
 
+  useEffect(() => {
+    const SERVICE = new RoadtripService();
+    SERVICE.getRoadtripsTypes().then((list) => {
+      console.log(list);
+      setRoadtripsTypes(list);
+    });
+  }, []);
+
+  const onStartDateChangeHandle = (value) => {
+    setStartDate(value);
+    setEndDate(value);
+  };
+
+  const onStartPlaceChangeHandle = (value) => {
+    setStartPlace(value);
+    setEndPlace(value);
+  };
+
+  const cancel = () => {
+    history.push('/explore');
+  };
+
+  const accept = () => {
+    const ENTITY = new RoadTrip();
+    ENTITY.title = title;
+    ENTITY.description = description;
+    ENTITY.maximumBikers = maximumBikers;
+    ENTITY.roadtripType = roadtripType;
+    ENTITY.startDate = startDate;
+    ENTITY.endDate = endDate;
+    ENTITY.startPlace = startPlace;
+    ENTITY.endPlace = endPlace;
+    ENTITY.places = [];
+    const SERVICE = new RoadtripService();
+    SERVICE.create(ENTITY).then(() => {
+      console.log('ok');
+    }).catch((expcetion) => {
+      console.error(expcetion);
+    });
+  };
+
+  const confirm = () => {
+    confirmDialog({
+      message: 'Are you sure you want to create this roadtrip?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept,
+    });
   };
 
   return (
@@ -43,6 +97,7 @@ function OrganizePage() {
                   minLength={5}
                   maxLength={200}
                   onValueChange={(e) => setTitle(e.value)}
+                  required
                 />
                 <label htmlFor="title">Title*</label>
               </span>
@@ -56,12 +111,13 @@ function OrganizePage() {
                 <i className="pi pi-user" />
               </span>
               <span className="p-float-label p-input-icon-right">
-                <InputText
+                <InputTextarea
                   id="description"
                   value={description}
                   minLength={10}
                   maxLength={1000}
                   onValueChange={(e) => setDescription(e.value)}
+                  required
                 />
                 <label htmlFor="description">Description*</label>
               </span>
@@ -72,7 +128,7 @@ function OrganizePage() {
           <div>
             <div className="p-inputgroup">
               <span className="p-inputgroup-addon">
-                <i className="pi pi-user" />
+                <i className="pi pi-users" />
               </span>
               <span className="p-float-label p-input-icon-right">
                 <InputNumber
@@ -81,6 +137,7 @@ function OrganizePage() {
                   onValueChange={(e) => setMaximumBikers(e.value)}
                   min={0}
                   max={999}
+                  required
                 />
                 <label htmlFor="maximumBikers">Maximum Bikers*</label>
               </span>
@@ -97,9 +154,8 @@ function OrganizePage() {
                 <Dropdown
                   id="roadtripType"
                   value={roadtripType}
-                  options={[]}
-                  // onChange={onCountryChange}
-                  optionLabel="name"
+                  options={roadtripsTypes}
+                  onChange={(e) => setRoadtripType(e.value)}
                   required
                 />
                 <label htmlFor="roadtripType">Roadtrip Type*</label>
@@ -111,13 +167,14 @@ function OrganizePage() {
           <div>
             <div className="p-inputgroup">
               <span className="p-inputgroup-addon">
-                <i className="pi pi-user" />
+                <i className="pi pi-map-marker" />
               </span>
               <span className="p-float-label p-input-icon-right">
                 <InputText
                   id="startPlace"
                   value={startPlace}
-                  onValueChange={(e) => setStartPlace(e.value)}
+                  onValueChange={(e) => onStartPlaceChangeHandle(e.value)}
+                  required
                 />
                 <label htmlFor="startPlace">Start Place (Zip Code)*</label>
               </span>
@@ -128,13 +185,14 @@ function OrganizePage() {
           <div>
             <div className="p-inputgroup">
               <span className="p-inputgroup-addon">
-                <i className="pi pi-user" />
+                <i className="pi pi-map-marker" />
               </span>
               <span className="p-float-label p-input-icon-right">
                 <InputText
                   id="endPlace"
                   value={endPlace}
                   onValueChange={(e) => setEndPlace(e.value)}
+                  required
                 />
                 <label htmlFor="endPlace">End Place (Zip Code)*</label>
               </span>
@@ -145,18 +203,18 @@ function OrganizePage() {
           <div>
             <div className="p-inputgroup">
               <span className="p-inputgroup-addon">
-                <i className="pi pi-user" />
+                <i className="pi pi-calendar-minus" />
               </span>
               <span className="p-float-label p-input-icon-right">
                 <Calendar
                   id="startDate"
                   value={startDate}
-                  onChange={(e) => setStartDate(e.value)}
+                  onChange={(e) => onStartDateChangeHandle(e.value)}
                   mask="99/99/9999"
                   dateFormat="dd/mm/yy"
                   showTime
                   required
-                  minDate={new Date()}
+                  minDate={startDate}
                 />
                 <label htmlFor="startDate">Start Date*</label>
               </span>
@@ -167,7 +225,7 @@ function OrganizePage() {
           <div>
             <div className="p-inputgroup">
               <span className="p-inputgroup-addon">
-                <i className="pi pi-user" />
+                <i className="pi pi-calendar-plus" />
               </span>
               <span className="p-float-label p-input-icon-right">
                 <Calendar
@@ -178,7 +236,7 @@ function OrganizePage() {
                   dateFormat="dd/mm/yy"
                   showTime
                   required
-                  minDate={new Date()}
+                  minDate={startDate}
                 />
                 <label htmlFor="endDate">End Date*</label>
               </span>
@@ -186,8 +244,8 @@ function OrganizePage() {
           </div>
         </dl>
         <dl>
-          <Button label="Cancel" onClick={() => confirm()} />
-          <Button label="Create road trip" onClick={() => confirm()} />
+          <Button label="Cancel" type="reset" className="p-button-secondary" icon="pi pi-times" onClick={() => cancel()} />
+          <Button label="Create" className="p-button-primary" icon="pi pi-check" onClick={() => confirm()} />
         </dl>
       </form>
     </section>
