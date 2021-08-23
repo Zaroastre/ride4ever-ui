@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 
 import toastReducer from './toast/toastReducer';
-import pilotReducer from './pilot/pilotReducer';
+import bikerReducer from './biker/bikerReducer';
 
 const rootReducer = combineReducers({
   toast: toastReducer,
-  pilot: pilotReducer,
+  biker: bikerReducer,
 });
 
 export default rootReducer;

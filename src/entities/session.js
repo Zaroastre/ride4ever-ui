@@ -1,8 +1,8 @@
-import Pilot from './pilot';
+import Biker from './biker';
 
 export default class Session {
   constructor() {
-    this.pilot = null;
+    this.biker = null;
     this.jwt = null;
   }
 
@@ -19,7 +19,7 @@ export default class Session {
       }
       if (entity !== null) {
         entity = new Session();
-        entity.pilot = Pilot.parse(json.pilot);
+        entity.biker = Biker.parse(json.biker);
         entity.jwt = json.jwt;
       }
     }

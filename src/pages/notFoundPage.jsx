@@ -13,7 +13,7 @@ function NotFoundPage() {
         Perhaps you can return back to the site's homepage
         and see if you can find what you are looking for.
       </p>
-      <Link to="/">
+      <Link to="/explore">
         <Button type="button" className="p-button p-button-raised p-button-primary" label="Back to Home Page" icon="pi pi-home" />
       </Link>
     </section>

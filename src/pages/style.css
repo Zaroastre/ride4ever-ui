@@ -1,0 +1,43 @@
+h1 {
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bolder;
+}
+
+.PillsChoices {
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+}
+
+.PillChoice {
+    display: block;
+    text-align: center;
+    padding: 2rem;
+    margin: 5rem 2rem;
+}
+
+#intro-title {
+    animation: ShadePanel reverse 7s;
+    opacity: 0;
+}
+
+@keyframes ShadePanel {
+    0% {
+        opacity: 0;
+        display: block;
+    }
+    20% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}

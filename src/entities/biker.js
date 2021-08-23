@@ -1,6 +1,7 @@
 import Motorbike from './motorbike';
+import Place from './place';
 
-export default class Pilot {
+export default class Biker {
   constructor() {
     this.identifier = 0;
     this.firstName = null;
@@ -24,6 +25,7 @@ export default class Pilot {
     this.allergies = null;
     this.canRepairMotorbike = false;
     this.isTrainedForFirstRescue = false;
+    this.place = null;
     this.hadAllreadyRideWithPassenger = false;
     this.motorbikes = [];
   }
@@ -31,7 +33,7 @@ export default class Pilot {
   static parse(json) {
     let entity = null;
     if (json && json instanceof Object) {
-      entity = new Pilot();
+      entity = new Biker();
       for (let jsonIndex = 0; jsonIndex < Object.keys(json).length; jsonIndex += 1) {
         const jsonPropertyName = Object.keys(json)[jsonIndex];
         if (!Object.keys(entity).includes(jsonPropertyName)) {
@@ -68,6 +70,7 @@ export default class Pilot {
             entity.motorbikes.push(Motorbike.parse(json.motorbikes[index]));
           }
         }
+        entity.place = Place.parse(json.place);
       }
     }
     return entity;

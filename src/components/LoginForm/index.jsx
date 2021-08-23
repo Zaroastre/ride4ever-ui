@@ -1,8 +1,6 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, {
   useState,
-  useRef,
 } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
@@ -17,7 +15,7 @@ import { Checkbox } from 'primereact/checkbox';
 import { Card } from 'primereact/card';
 
 import { setToast, resetToast } from '../../store/toast/toastAction';
-import { setPilot, resetPilot } from '../../store/pilot/pilotAction';
+import { setBiker, resetBiker } from '../../store/biker/bikerAction';
 
 import AuthenticationService from '../../services/authenticationService';
 import Credential from '../../entities/credential';
@@ -28,8 +26,8 @@ function LoginForm({
   title,
   setToastInStore,
   resetToastInStore,
-  setPilotInStore,
-  resetPilotInStore,
+  setBikerInStore,
+  resetBikerInStore,
 }) {
   const history = useHistory();
   const [, setCookie] = useCookies();
@@ -47,8 +45,8 @@ function LoginForm({
     CREDENTIAL.password = password;
     SERVICE.login(CREDENTIAL).then((session) => {
       setCookie('jwt', session.jwt);
-      setPilotInStore({
-        entity: session.pilot,
+      setBikerInStore({
+        entity: session.biker,
       });
       setToastInStore({
         severity: 'success',
@@ -56,9 +54,9 @@ function LoginForm({
         detail: 'You are now connected.',
       });
       resetToastInStore();
-      history.push('/profile');
+      history.push('/explore');
     }).catch((exception) => {
-      resetPilotInStore();
+      resetBikerInStore();
       setToastInStore({
         severity: 'error',
         summary: 'Access denied',
@@ -159,8 +157,8 @@ function LoginForm({
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  setPilotInStore: (data) => dispatch(setPilot(data)),
-  resetPilotInStore: () => dispatch(resetPilot()),
+  setBikerInStore: (data) => dispatch(setBiker(data)),
+  resetBikerInStore: () => dispatch(resetBiker()),
   setToastInStore: (data) => dispatch(setToast(data)),
   resetToastInStore: () => dispatch(resetToast()),
 });

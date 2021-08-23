@@ -1,0 +1,10 @@
+.Motorbike {
+    position: relative;
+    width: 24rem;
+    box-sizing: border-box;
+}
+
+.Motorbike button {
+    box-sizing: border-box;
+
+}

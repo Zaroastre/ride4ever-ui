@@ -17,20 +17,20 @@ import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 
 import { setToast, resetToast } from '../../store/toast/toastAction';
-import { setPilot, resetPilot } from '../../store/pilot/pilotAction';
+import { setBiker, resetBiker } from '../../store/biker/bikerAction';
 
 import './style.css';
 import AuthenticationService from '../../services/authenticationService';
-import Pilot from '../../entities/pilot';
 import Credential from '../../entities/credential';
 import RegistrationService from '../../services/registrationService';
+import Biker from '../../entities/biker';
 
 function RegisterForm({
   title,
   setToastInStore,
   resetToastInStore,
-  setPilotInStore,
-  resetPilotInStore,
+  setBikerInStore,
+  resetBikerInStore,
 }) {
   const history = useHistory();
   const [, setCookie] = useCookies();
@@ -57,8 +57,8 @@ function RegisterForm({
     CREDENTIAL.password = password;
     SERVICE.login(CREDENTIAL).then((session) => {
       setCookie('jwt', session.jwt);
-      setPilotInStore({
-        entity: session.pilot,
+      setBikerInStore({
+        entity: session.biker,
       });
       setToastInStore({
         severity: 'success',
@@ -68,7 +68,7 @@ function RegisterForm({
       resetToastInStore();
       history.push('/profile');
     }).catch((exception) => {
-      resetPilotInStore();
+      resetBikerInStore();
       setToastInStore({
         severity: 'error',
         summary: 'Access denied',
@@ -84,7 +84,7 @@ function RegisterForm({
     event.preventDefault();
     setIsLoading(true);
     const SERVICE = new RegistrationService();
-    const PILOT = new Pilot();
+    const PILOT = new Biker();
     PILOT.firstName = firstName;
     PILOT.lastName = lastName;
     PILOT.pseudo = pseudo;
@@ -102,8 +102,7 @@ function RegisterForm({
       resetToastInStore();
       login();
     }).catch((exception) => {
-      console.log(exception);
-      resetPilotInStore();
+      resetBikerInStore();
       setToastInStore({
         severity: 'error',
         summary: 'Registration failure',
@@ -309,8 +308,8 @@ function RegisterForm({
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  setPilotInStore: (data) => dispatch(setPilot(data)),
-  resetPilotInStore: () => dispatch(resetPilot()),
+  setBikerInStore: (data) => dispatch(setBiker(data)),
+  resetBikerInStore: () => dispatch(resetBiker()),
   setToastInStore: (data) => dispatch(setToast(data)),
   resetToastInStore: () => dispatch(resetToast()),
 });

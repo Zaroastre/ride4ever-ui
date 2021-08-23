@@ -19,7 +19,7 @@ import { Dialog } from 'primereact/dialog';
 import { ColorPicker } from 'primereact/colorpicker';
 
 import { setToast, resetToast } from '../../store/toast/toastAction';
-import { setPilot, resetPilot } from '../../store/pilot/pilotAction';
+import { setBiker, resetBiker } from '../../store/biker/bikerAction';
 
 import './style.css';
 

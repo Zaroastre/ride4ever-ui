@@ -1,0 +1,10 @@
+.BikerPictureContainer {
+    display: block;
+    position: relative;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: solid 1px rgba(0,0,0,1);
+    box-shadow: 0PX 0px 10px 0px rgba(0,0,0,1);
+}

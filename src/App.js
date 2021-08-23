@@ -15,18 +15,21 @@ import 'primeicons/primeicons.css';
 
 import Header from './components/Header';
 
+import IntroPage from './pages/introPage';
 import HomePage from './pages/homePage';
-import NotFoundPage from './pages/notFoundPage';
 import LoginPage from './pages/loginPage';
+import LogoutPage from './pages/logoutPage';
 import RegisterPage from './pages/registerPage';
 import RecoveryPage from './pages/recoveryPage';
 import ProfilePage from './pages/profilePage';
+import OrganizePage from './pages/organizePage';
+import JoinPage from './pages/joinPage';
+import NotFoundPage from './pages/notFoundPage';
 
 import './App.css';
 
 function App() {
   const toast = useRef(null);
-  // const coockies = useCookies();
 
   return (
     <>
@@ -34,9 +37,13 @@ function App() {
       <Header />
       <main>
         <Switch>
-          <Route exact path="/" component={HomePage} />
+          <Route exact path="/" component={IntroPage} />
+          <Route exact path="/explore" component={HomePage} />
           <Route exact path="/login" component={LoginPage} />
+          <Route exact path="/logout" component={LogoutPage} />
           <Route exact path="/register" component={RegisterPage} />
+          <Route exact path="/join" component={JoinPage} />
+          <Route exact path="/organize" component={OrganizePage} />
           <Route exact path="/recovery" component={RecoveryPage} />
           <Route exact path="/profile" component={ProfilePage} />
           <Route path="/*" component={NotFoundPage} />

@@ -1,5 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router';
+import { useSelector } from 'react-redux';
 import { Button } from 'primereact/button';
 import { Link } from 'react-router-dom';
 import { Divider } from 'primereact/divider';
@@ -7,6 +8,7 @@ import { Divider } from 'primereact/divider';
 import './style.css';
 
 function Header() {
+  const biker = useSelector((state) => state.biker.entity);
   return (
     <header className="Component Component-Header">
       <span>
@@ -20,13 +22,25 @@ function Header() {
             My Account
           </span>
           <ul>
-            <Link to="/login">
-              <Button label="Login" />
-            </Link>
-            <Divider />
-            <Link to="/profile">Account settings</Link>
-            <Divider />
-            <Link to="/register">Create an account</Link>
+            {
+              biker ? (
+                <>
+                  <Link to="/profile">Account settings</Link>
+                  <Divider />
+                  <Link to="/logout">
+                    <Button label="Logout" />
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <Button label="Login" />
+                  </Link>
+                  <Divider />
+                  <Link to="/register">Create an account</Link>
+                </>
+              )
+            }
           </ul>
         </nav>
       </span>
