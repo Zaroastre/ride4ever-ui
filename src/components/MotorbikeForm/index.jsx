@@ -4,7 +4,7 @@ import React, {
   useState,
   useRef,
 } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { useCookies } from 'react-cookie';
@@ -349,8 +349,6 @@ function MotorbikeForm({
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  setPilotInStore: (data) => dispatch(setPilot(data)),
-  resetPilotInStore: () => dispatch(resetPilot()),
   setToastInStore: (data) => dispatch(setToast(data)),
   resetToastInStore: () => dispatch(resetToast()),
 });
