@@ -3,13 +3,11 @@
 import os;
 
 def main():
-    print("SAVING DEV...");
     os.system("git add .");
     os.system('git commit -m "[PRODUCTION-SETUP] Clean project for production."');
     os.system("git push --set-upstream origin dev");
-    print("SAVING MAIN...");
-    os.system("git merge main");
-    input();
+    os.system("git checkout main");
+    os.system("git merge dev");
     os.remove(".eslintrc.js");
     os.system("git add .")
     os.system('git commit -m "[PRODUCTION-SETUP] Clean project for production."');
