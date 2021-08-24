@@ -13,7 +13,7 @@ export default function bikerReducer(state = initialState, action) {
       };
     case bikerAction.RESET_BIKER:
       return {
-        entity: initialState,
+        entity: null,
       };
     default:
       return state;

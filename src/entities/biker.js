@@ -1,5 +1,5 @@
 import Motorbike from './motorbike';
-import Place from './place';
+import Address from './address';
 
 export default class Biker {
   constructor() {
@@ -8,10 +8,11 @@ export default class Biker {
     this.lastName = null;
     this.pseudo = null;
     this.birthDate = null;
-    this.registrationDate = null;
+    this.registrationDate = new Date();
     this.driverLicenceDate = null;
     this.gender = null;
     this.email = null;
+    this.address = new Address();
     this.phoneNumber = null;
     this.password = null;
     this.biography = null;
@@ -25,7 +26,6 @@ export default class Biker {
     this.allergies = null;
     this.canRepairMotorbike = false;
     this.isTrainedForFirstRescue = false;
-    this.place = null;
     this.hadAllreadyRideWithPassenger = false;
     this.motorbikes = [];
   }
@@ -56,6 +56,7 @@ export default class Biker {
         entity.biography = json.biography;
         entity.picture = json.picture;
         entity.work = json.work;
+        entity.address = Address.parse(json.address);
         entity.level = json.level;
         entity.blood = json.blood;
         entity.weight = json.weight;
@@ -70,7 +71,6 @@ export default class Biker {
             entity.motorbikes.push(Motorbike.parse(json.motorbikes[index]));
           }
         }
-        entity.place = Place.parse(json.place);
       }
     }
     return entity;

@@ -1,10 +1,11 @@
-export default class Place {
+export default class Address {
   constructor() {
     this.identifier = 0;
     this.number = 0;
     this.street = null;
     this.zipCode = 0;
     this.city = null;
+    this.state = null;
     this.country = null;
     this.weather = null;
   }
@@ -12,7 +13,7 @@ export default class Place {
   static parse(json) {
     let entity = null;
     if (json && json instanceof Object) {
-      entity = new Place();
+      entity = new Address();
       for (let jsonIndex = 0; jsonIndex < Object.keys(json).length; jsonIndex += 1) {
         const jsonPropertyName = Object.keys(json)[jsonIndex];
         if (!Object.keys(entity).includes(jsonPropertyName)) {
@@ -26,6 +27,7 @@ export default class Place {
         entity.street = json.street;
         entity.zipCode = json.zipCode;
         entity.city = json.city;
+        entity.state = json.state;
         entity.country = json.country;
         entity.weather = json.weather;
       }

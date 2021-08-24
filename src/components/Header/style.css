@@ -11,35 +11,64 @@ header {
     z-index: 10000;
 }
 
-nav {
+header nav {
     position: relative;
     color: rgba(255,255,255,1);
-    width: 15rem;
     text-align: center;
     cursor: pointer;
     background: rgba(0,0,0,1);
+    display: flex;
+    margin: 0;
+    padding: 0;
 }
 
-nav > span {
+header nav > span {
     display: block;
     padding: 25px 0;
     height: 5rem;
     font-size: bolder;
 }
 
-nav > i {
+header  nav > i {
     display: block;
     padding-left: 20px;
 }
 
-nav:hover ul {
-    display: block;
-}
-ul {
-    display: none;
+header nav ul {
+    margin: 0;
+    padding: 0;
 }
 
-ul a {
+header nav > ul {
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+}
+header li {
+    position: relative;
+    display: block;
+    list-style: none;
+    width: 10rem;
+    background: rgba(0,0,0,1);
+    margin: 0;
+    padding: 0;
+}
+
+header nav > ul > li > ul {
+    position: absolute;
+    display: none;
+    background: black;
+    width: 100%;
+}
+
+header nav > ul > li:hover > ul {
+    display: block;
+}
+
+header nav a {
+    position: relative;
     display: block;
     text-decoration: none;
     color: rgba(255,255,255,1);

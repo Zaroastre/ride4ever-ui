@@ -25,8 +25,32 @@ export default class RoadtripService {
             }
           });
       } else {
-        reject(new Error('Invalid data type for parameter \'credential\'.'));
+        reject(new Error('Invalid data type for parameter \'entity\'.'));
       }
+    });
+  }
+
+  findRoadtrips(filters = null) {
+    return new Promise((resolve, reject) => {
+      axios.get(String(this.url), { headers: this.headers, params: filters })
+        .then((response) => {
+          const roadtrips = [];
+          if (Array.isArray(response.data)) {
+            for (let index = 0; index < response.data.length; index += 1) {
+              roadtrips.push(RoadTrip.parse(response.data[index]));
+            }
+          } else {
+            roadtrips.push(RoadTrip.parse(response.data));
+          }
+          resolve(roadtrips);
+        })
+        .catch((exception) => {
+          if (exception.response === undefined) {
+            reject(new Error('Server is unreachable.'));
+          } else {
+            reject(exception.response);
+          }
+        });
     });
   }
 

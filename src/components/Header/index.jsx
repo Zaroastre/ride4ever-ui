@@ -9,6 +9,8 @@ import './style.css';
 
 function Header() {
   const biker = useSelector((state) => state.biker.entity);
+  // const [activeIndex, setActiveIndex] = useState(3);
+
   return (
     <header className="Component Component-Header">
       <span>
@@ -18,29 +20,47 @@ function Header() {
       </span>
       <span>
         <nav>
-          <span>
-            My Account
-          </span>
           <ul>
             {
               biker ? (
-                <>
-                  <Link to="/profile">Account settings</Link>
-                  <Divider />
-                  <Link to="/logout">
-                    <Button label="Logout" />
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link to="/login">
-                    <Button label="Login" />
-                  </Link>
-                  <Divider />
-                  <Link to="/register">Create an account</Link>
-                </>
-              )
+                <li><Link to="/dashboard">Dashboard</Link></li>
+              ) : (null)
             }
+            <li>
+              <Link to="/explore">Road Trip</Link>
+              <ul>
+                <li><Link to="/join">Search</Link></li>
+                <li><Link to="/organize">Organize</Link></li>
+              </ul>
+            </li>
+            <li>
+              Account
+              <ul>
+                {
+                  biker ? (
+                    <>
+                      <li><Link to="/profile">Account settings</Link></li>
+                      <Divider />
+                      <li>
+                        <Link to="/logout">
+                          <Button label="Logout" />
+                        </Link>
+                      </li>
+                    </>
+                  ) : (
+                    <>
+                      <li>
+                        <Link to="/login">
+                          <Button label="Login" />
+                        </Link>
+                      </li>
+                      <Divider />
+                      <li><Link to="/register">Create an account</Link></li>
+                    </>
+                  )
+                }
+              </ul>
+            </li>
           </ul>
         </nav>
       </span>

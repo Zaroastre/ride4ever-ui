@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable max-len */
 import React, {
   useState,
@@ -5,6 +6,7 @@ import React, {
 } from 'react';
 import { withRouter } from 'react-router';
 import { useHistory } from 'react-router-dom';
+import { useSelector, connect } from 'react-redux';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
@@ -12,72 +14,101 @@ import { Dropdown } from 'primereact/dropdown';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Calendar } from 'primereact/calendar';
+
+import { setToast, resetToast } from '../store/toast/toastAction';
 import RoadtripService from '../services/roadtripService';
 import RoadTrip from '../entities/roadtrip';
+import Address from '../entities/address';
 
-function OrganizePage() {
+function OrganizePage({
+  setToastInStore,
+  resetToastInStore,
+}) {
   const history = useHistory();
-  const [title, setTitle] = useState(null);
-  const [description, setDescription] = useState(null);
-  const [maximumBikers, setMaximumBikers] = useState(0);
-  const [roadtripType, setRoadtripType] = useState(null);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(startDate);
-  const [startPlace, setStartPlace] = useState(null);
-  const [endPlace, setEndPlace] = useState(null);
-  // const [places, setPlaces] = useState([]);
-  // const [kilometersAverage, setKilometersAverage] = useState(0);
-
+  const biker = useSelector((state) => state.biker.entity);
+  const [roadtrip, setRoadTrip] = useState(new RoadTrip());
+  const [startAddress, setStartAddress] = useState(new Address());
+  const [stopAddress, setStopAddress] = useState(new Address());
   const [roadtripsTypes, setRoadtripsTypes] = useState([]);
 
   useEffect(() => {
     const SERVICE = new RoadtripService();
-    SERVICE.getRoadtripsTypes().then((list) => {
-      console.log(list);
-      setRoadtripsTypes(list);
+    SERVICE.getRoadtripsTypes().then((enumeration) => {
+      // const LIST = [];
+      // for (let index = 0; index < enumeration.length; index += 1) {
+      //   LIST.push({ name: enumeration[index] });
+      // }
+      setRoadtripsTypes(enumeration);
     });
   }, []);
 
-  const onStartDateChangeHandle = (value) => {
-    setStartDate(value);
-    setEndDate(value);
-  };
-
-  const onStartPlaceChangeHandle = (value) => {
-    setStartPlace(value);
-    setEndPlace(value);
-  };
+  useEffect(() => {
+    if (biker && biker.entity) {
+      const trip = new RoadTrip();
+      trip.organizer = biker.entity;
+      trip.startAddress = trip.organizer.address;
+      setStartAddress(trip.organizer.address);
+      setStopAddress(trip.organizer.address);
+      setRoadTrip(trip);
+    }
+  }, [biker, setRoadTrip, setStartAddress, setStopAddress]);
 
   const cancel = () => {
     history.push('/explore');
   };
 
   const accept = () => {
-    const ENTITY = new RoadTrip();
-    ENTITY.title = title;
-    ENTITY.description = description;
-    ENTITY.maximumBikers = maximumBikers;
-    ENTITY.roadtripType = roadtripType;
-    ENTITY.startDate = startDate;
-    ENTITY.endDate = endDate;
-    ENTITY.startPlace = startPlace;
-    ENTITY.endPlace = endPlace;
-    ENTITY.places = [];
+    roadtrip.startAddress = startAddress;
+    roadtrip.stopAddress = stopAddress;
+    console.log(roadtrip);
     const SERVICE = new RoadtripService();
-    SERVICE.create(ENTITY).then(() => {
-      console.log('ok');
+    SERVICE.create(roadtrip).then(() => {
+      setToastInStore({
+        severity: 'success',
+        summary: 'Road Trip created',
+        detail: 'Your road trip is successfully created. Ride safe!',
+      });
+      resetToastInStore();
+      history.push('/dashboard');
     }).catch((expcetion) => {
       console.error(expcetion);
     });
   };
 
-  const confirm = () => {
+  const confirm = (event) => {
+    event.preventDefault();
     confirmDialog({
       message: 'Are you sure you want to create this roadtrip?',
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept,
     });
+  };
+
+  const updateRoadtrip = (property, value) => {
+    console.log(property, value);
+    if (Object.keys(roadtrip).includes(property)) {
+      const updatedRoadtrip = roadtrip;
+      updatedRoadtrip[property] = value;
+      setRoadTrip(updatedRoadtrip);
+    } else {
+      console.log(String('Property not found: ').concat(property));
+    }
+  };
+
+  const updateAddress = (address, isStart, property, value) => {
+    console.log(property, value);
+    if (Object.keys(address).includes(property)) {
+      const updatedAddress = address;
+      updatedAddress[property] = value;
+      if (isStart) {
+        setStartAddress(updatedAddress);
+      } else {
+        setStopAddress(updatedAddress);
+      }
+    } else {
+      console.log(String('Property not found: ').concat(property));
+    }
   };
 
   return (
@@ -93,10 +124,10 @@ function OrganizePage() {
               <span className="p-float-label p-input-icon-right">
                 <InputText
                   id="title"
-                  value={title}
+                  value={roadtrip.title}
                   minLength={5}
                   maxLength={200}
-                  onValueChange={(e) => setTitle(e.value)}
+                  onChange={(e) => updateRoadtrip('title', e.target.value)}
                   required
                 />
                 <label htmlFor="title">Title*</label>
@@ -113,10 +144,10 @@ function OrganizePage() {
               <span className="p-float-label p-input-icon-right">
                 <InputTextarea
                   id="description"
-                  value={description}
+                  value={roadtrip.description}
                   minLength={10}
                   maxLength={1000}
-                  onValueChange={(e) => setDescription(e.value)}
+                  onChange={(e) => updateRoadtrip('description', e.target.value)}
                   required
                 />
                 <label htmlFor="description">Description*</label>
@@ -132,14 +163,14 @@ function OrganizePage() {
               </span>
               <span className="p-float-label p-input-icon-right">
                 <InputNumber
-                  id="maximumBikers"
-                  value={maximumBikers}
-                  onValueChange={(e) => setMaximumBikers(e.value)}
-                  min={0}
+                  id="maxBikers"
+                  value={roadtrip.maxBikers}
+                  onChange={(e) => updateRoadtrip('maxBikers', e.value)}
+                  min={1}
                   max={999}
                   required
                 />
-                <label htmlFor="maximumBikers">Maximum Bikers*</label>
+                <label htmlFor="maxBikers">Maximum Bikers*</label>
               </span>
             </div>
           </div>
@@ -152,13 +183,13 @@ function OrganizePage() {
               </span>
               <span className="p-float-label p-input-icon-right">
                 <Dropdown
-                  id="roadtripType"
-                  value={roadtripType}
+                  id="roadTripType"
+                  value={roadtrip.roadtripType}
                   options={roadtripsTypes}
-                  onChange={(e) => setRoadtripType(e.value)}
+                  onChange={(e) => updateRoadtrip('roadTripType', e.target.value)}
                   required
                 />
-                <label htmlFor="roadtripType">Roadtrip Type*</label>
+                <label htmlFor="roadTripType">Roadtrip Type*</label>
               </span>
             </div>
           </div>
@@ -171,12 +202,12 @@ function OrganizePage() {
               </span>
               <span className="p-float-label p-input-icon-right">
                 <InputText
-                  id="startPlace"
-                  value={startPlace}
-                  onValueChange={(e) => onStartPlaceChangeHandle(e.value)}
+                  id="startAddress"
+                  value={startAddress.zipCode}
+                  onChange={(e) => updateAddress(startAddress, true, 'zipCode', e.target.value)}
                   required
                 />
-                <label htmlFor="startPlace">Start Place (Zip Code)*</label>
+                <label htmlFor="startAddress">Start Address (Zip Code)*</label>
               </span>
             </div>
           </div>
@@ -189,12 +220,12 @@ function OrganizePage() {
               </span>
               <span className="p-float-label p-input-icon-right">
                 <InputText
-                  id="endPlace"
-                  value={endPlace}
-                  onValueChange={(e) => setEndPlace(e.value)}
+                  id="stopAddress"
+                  value={stopAddress.zipCode}
+                  onChange={(e) => updateAddress(stopAddress, false, 'zipCode', e.target.value)}
                   required
                 />
-                <label htmlFor="endPlace">End Place (Zip Code)*</label>
+                <label htmlFor="stopAddress">Stop Address (Zip Code)*</label>
               </span>
             </div>
           </div>
@@ -208,13 +239,13 @@ function OrganizePage() {
               <span className="p-float-label p-input-icon-right">
                 <Calendar
                   id="startDate"
-                  value={startDate}
-                  onChange={(e) => onStartDateChangeHandle(e.value)}
+                  value={roadtrip.startDate}
+                  onChange={(e) => updateRoadtrip('startDate', e.value)}
                   mask="99/99/9999"
                   dateFormat="dd/mm/yy"
                   showTime
                   required
-                  minDate={startDate}
+                  minDate={roadtrip.startDate}
                 />
                 <label htmlFor="startDate">Start Date*</label>
               </span>
@@ -230,13 +261,13 @@ function OrganizePage() {
               <span className="p-float-label p-input-icon-right">
                 <Calendar
                   id="endDate"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.value)}
+                  value={roadtrip.endDate}
+                  onChange={(e) => updateRoadtrip('endDate', e.value)}
                   mask="99/99/9999"
                   dateFormat="dd/mm/yy"
                   showTime
                   required
-                  minDate={startDate}
+                  minDate={roadtrip.startDate}
                 />
                 <label htmlFor="endDate">End Date*</label>
               </span>
@@ -245,11 +276,16 @@ function OrganizePage() {
         </dl>
         <dl>
           <Button label="Cancel" type="reset" className="p-button-secondary" icon="pi pi-times" onClick={() => cancel()} />
-          <Button label="Create" className="p-button-primary" icon="pi pi-check" onClick={() => confirm()} />
+          <Button label="Create" className="p-button-primary" icon="pi pi-check" onClick={(event) => confirm(event)} />
         </dl>
       </form>
     </section>
   );
 }
 
-export default withRouter(OrganizePage);
+const mapDispatchToProps = (dispatch) => ({
+  setToastInStore: (data) => dispatch(setToast(data)),
+  resetToastInStore: () => dispatch(resetToast()),
+});
+
+export default withRouter(connect(null, mapDispatchToProps)(OrganizePage));

@@ -24,6 +24,7 @@ import RecoveryPage from './pages/recoveryPage';
 import ProfilePage from './pages/profilePage';
 import OrganizePage from './pages/organizePage';
 import JoinPage from './pages/joinPage';
+import DashboardPage from './pages/dashboardPage';
 import NotFoundPage from './pages/notFoundPage';
 
 import './App.css';
@@ -46,6 +47,7 @@ function App() {
           <Route exact path="/organize" component={OrganizePage} />
           <Route exact path="/recovery" component={RecoveryPage} />
           <Route exact path="/profile" component={ProfilePage} />
+          <Route exact path="/dashboard" component={DashboardPage} />
           <Route path="/*" component={NotFoundPage} />
         </Switch>
       </main>

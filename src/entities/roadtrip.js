@@ -1,17 +1,20 @@
+import Address from './address';
+
 export default class RoadTrip {
   constructor() {
     this.identifier = 0;
     this.title = null;
     this.description = null;
     this.organizer = null;
-    this.maxPilots = 0;
+    this.maxBikers = 1;
     this.candidates = [];
-    this.pilots = [];
+    this.bikers = [];
     this.roadTripType = null;
     this.startDate = null;
     this.endDate = null;
-    this.startPlace = false;
-    this.stopPlace = null;
+    this.destinations = [];
+    this.startAddress = new Address();
+    this.stopAddress = new Address();
     this.kilometersAverage = 0;
   }
 
@@ -31,14 +34,15 @@ export default class RoadTrip {
         entity.title = json.title;
         entity.description = json.description;
         entity.organizer = json.organizer;
-        entity.maxPilots = json.maxPilots;
+        entity.maxBikers = json.maxBikers;
         entity.candidates = json.candidates;
-        entity.pilots = json.pilots;
+        entity.bikers = json.bikers;
         entity.roadTripType = json.roadTripType;
         entity.startDate = json.startDate;
         entity.endDate = json.endDate;
-        entity.startPlace = json.startPlace;
-        entity.stopPlace = json.stopPlace;
+        entity.startAddress = json.startAddress;
+        entity.destinations = json.destinations;
+        entity.stopAddress = json.stopAddress;
         entity.kilometersAverage = json.kilometersAverage;
       }
     }

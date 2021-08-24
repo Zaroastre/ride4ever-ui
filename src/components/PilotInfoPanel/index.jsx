@@ -44,15 +44,15 @@ function PilotInfoPanel({
           <p>
             <GeoAltFill />
             {
-              String(biker.place.number)
+              String(biker.address.number)
                 .concat(' ')
-                .concat(biker.place.street)
+                .concat(biker.address.street)
                 .concat(' ')
-                .concat(biker.place.zipCode)
+                .concat(biker.address.zipCode)
                 .concat(' ')
-                .concat(biker.place.city)
+                .concat(biker.address.city)
                 .concat(', ')
-                .concat(biker.place.country.toUpperCase())
+                .concat(biker.address.country.toUpperCase())
             }
           </p>
           <p>

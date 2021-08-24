@@ -23,7 +23,7 @@ function PilotInfoPanel({
             }
             subTitle={motorbike.licensePlate}
             footer={(
-              <div>
+              <div className="">
                 <Button label="Edit" className="p-button-primary" />
                 <Button label="Remove" className="p-button-danger" />
               </div>
