@@ -1,0 +1,7 @@
+section.Component-DashBoard {
+    text-align: center;
+}
+
+section.Component-DashBoard .DashBoard-Item {
+    display: inline-block;
+}

@@ -54,7 +54,7 @@ function LoginForm({
         detail: 'You are now connected.',
       });
       resetToastInStore();
-      history.push('/explore');
+      history.push('/dashboard');
     }).catch((exception) => {
       resetBikerInStore();
       setToastInStore({

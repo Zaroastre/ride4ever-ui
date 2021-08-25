@@ -16,7 +16,6 @@ function ProfilePage() {
   const biker = useSelector((state) => state.biker.entity.entity);
 
   const render = () => {
-    console.log(biker);
     if (biker) {
       return (
         <section className="Page Page-Profile">

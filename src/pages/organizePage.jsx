@@ -65,7 +65,7 @@ function OrganizePage({
   const accept = () => {
     roadtrip.startAddress = startAddress;
     roadtrip.stopAddress = stopAddress;
-    console.log(roadtrip);
+    roadtrip.status='COMING_SOON';
     const SERVICE = new RoadtripService();
     SERVICE.create(roadtrip).then(() => {
       setToastInStore({
