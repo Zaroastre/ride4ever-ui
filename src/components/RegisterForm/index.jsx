@@ -93,6 +93,7 @@ function RegisterForm({
     PILOT.birthDate = birthDate;
     PILOT.gender = gender;
     PILOT.password = password;
+    PILOT.address = null;
     SERVICE.create(PILOT).then(() => {
       setToastInStore({
         severity: 'success',

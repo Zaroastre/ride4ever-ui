@@ -46,9 +46,14 @@ function OrganizePage({
     if (biker && biker.entity) {
       const trip = new RoadTrip();
       trip.organizer = biker.entity;
-      trip.startAddress = trip.organizer.address;
-      setStartAddress(trip.organizer.address);
-      setStopAddress(trip.organizer.address);
+      if (trip.organizer.address) {
+        trip.startAddress = trip.organizer.address;
+        setStartAddress(trip.organizer.address);
+        setStopAddress(trip.organizer.address);
+      } else {
+        setStartAddress(new Address());
+        setStopAddress(new Address());
+      }
       setRoadTrip(trip);
     }
   }, [biker, setRoadTrip, setStartAddress, setStopAddress]);
