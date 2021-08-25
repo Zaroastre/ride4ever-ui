@@ -46,7 +46,7 @@ function DashboardPage() {
 
     }
 
-  }, [setOrganizedRoadTrips, setUpcomingRoadTrips, setPendingRoadTripsRequests, setOldRoadTrips]);
+  }, [setOrganizedRoadTrips, setUpcomingRoadTrips, setPendingRoadTripsRequests, setOldRoadTrips, biker]);
 
   return (
     <section className="Page Page-Login">
