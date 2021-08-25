@@ -12,7 +12,7 @@ import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { Divider } from 'primereact/divider';
 import { Checkbox } from 'primereact/checkbox';
-import { Card } from 'primereact/card';
+// import { Card } from 'primereact/card';
 
 import { setToast, resetToast } from '../../store/toast/toastAction';
 import { setBiker, resetBiker } from '../../store/biker/bikerAction';
@@ -74,84 +74,82 @@ function LoginForm({
 
   return (
     <section className="Component Component-Login">
-      <div>
-        <Card title={title}>
-          <form>
-            <dl className="p-field">
-              <div>
-                <div className="p-inputgroup">
-                  <span className="p-inputgroup-addon">
-                    <i className="pi pi-user" />
-                  </span>
-                  <span className="p-float-label p-input-icon-right">
-                    <InputText
-                      id="email"
-                      value={email}
-                      onChange={(event) => setEmail(event.target.value)}
-                      autoFocus
-                      required
-                      pattern="^([a-z0-9]{1,}([-._])?){1,}[a-z0-9]{1,}@([a-z0-9]{2,}.){1,}[a-z]{2,}$"
-                      minLength={5}
-                      aria-describedby="username-field-help"
-                    />
-                    <label htmlFor="email">Email*</label>
-                  </span>
-                </div>
-              </div>
-            </dl>
-            <dl className="p-field">
-              <div>
-                <div className="p-inputgroup">
-                  <span className="p-inputgroup-addon">
-                    <i className="pi pi-key" />
-                  </span>
-                  <span className="p-float-label p-input-icon-right">
-                    <Password
-                      id="password"
-                      value={password}
-                      onChange={(event) => setPassword(event.target.value)}
-                      minLength={8}
-                      required
-                      aria-describedby="password-field-help"
-                    />
-                    <label htmlFor="email">Password*</label>
-                  </span>
-                </div>
-              </div>
-            </dl>
-            <dl className="p-field">
-              <div>
-                <div className="p-inputgroup">
-                  <Checkbox
-                    inputId="login-must-stay-connected"
-                    value={mustStayConnected}
-                    onChange={updateMustStayConnected}
-                    checked={mustStayConnected}
-                  />
-                  <label htmlFor="login-must-stay-connected" className="p-checkbox-label">Must stay connected.</label>
-                </div>
-              </div>
-            </dl>
-            <dl className="p-field">
-              <span>
-                <Button
-                  type="submit"
-                  className="p-button p-button-raised p-button-primary button-login"
-                  label="Login"
-                  onClick={login}
-                  disabled={!email || !password}
-                  loading={isLoading}
-                />
+      {/* <Card title={title}> */}
+      <form>
+        <dl className="p-field">
+          <div>
+            <div className="p-inputgroup">
+              <span className="p-inputgroup-addon">
+                <i className="pi pi-user" />
               </span>
-            </dl>
-            <Link to="/recovery">Password lost?</Link>
-            <Divider align="center">OR</Divider>
-            <Link to="/register">
-              <Button type="submit" className="p-button p-button-raised p-button-secondary" label="Create a account" />
-            </Link>
-          </form>
-        </Card>
-      </div>
+              <span className="p-float-label p-input-icon-right">
+                <InputText
+                  id="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  autoFocus
+                  required
+                  pattern="^([a-z0-9]{1,}([-._])?){1,}[a-z0-9]{1,}@([a-z0-9]{2,}.){1,}[a-z]{2,}$"
+                  minLength={5}
+                  aria-describedby="username-field-help"
+                />
+                <label htmlFor="email">Email*</label>
+              </span>
+            </div>
+          </div>
+        </dl>
+        <dl className="p-field">
+          <div>
+            <div className="p-inputgroup">
+              <span className="p-inputgroup-addon">
+                <i className="pi pi-key" />
+              </span>
+              <span className="p-float-label p-input-icon-right">
+                <Password
+                  id="password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  minLength={8}
+                  required
+                  aria-describedby="password-field-help"
+                />
+                <label htmlFor="email">Password*</label>
+              </span>
+            </div>
+          </div>
+        </dl>
+        <dl className="p-field">
+          <div>
+            <div className="p-inputgroup">
+              <Checkbox
+                inputId="login-must-stay-connected"
+                value={mustStayConnected}
+                onChange={updateMustStayConnected}
+                checked={mustStayConnected}
+              />
+              <label htmlFor="login-must-stay-connected" className="p-checkbox-label">Must stay connected.</label>
+            </div>
+          </div>
+        </dl>
+        <dl className="p-field">
+          <span>
+            <Button
+              type="submit"
+              className="p-button p-button-raised p-button-primary button-login"
+              label="Login"
+              onClick={login}
+              disabled={!email || !password}
+              loading={isLoading}
+            />
+          </span>
+        </dl>
+        <Link to="/recovery">Password lost?</Link>
+        <Divider align="center">OR</Divider>
+        <Link to="/register">
+          <Button type="submit" className="p-button p-button-raised p-button-secondary" label="Create a account" />
+        </Link>
+      </form>
+      {/* </Card> */}
     </section>
   );
 }

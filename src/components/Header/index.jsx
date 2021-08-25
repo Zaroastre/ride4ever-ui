@@ -15,7 +15,7 @@ function Header() {
     <header className="Component Component-Header">
       <span>
         <a href="./">
-          <img src="/assets/images/icons/NIRAHTECH_ICON.svg" alt="icon" />
+          <img className="AppLogo" src="/assets/images/icons/NIRAHTECH_ICON.svg" alt="icon" />
         </a>
       </span>
       <span>
@@ -34,7 +34,9 @@ function Header() {
               </ul>
             </li>
             <li>
-              Account
+              <a href="#">
+                Account
+              </a>
               <ul>
                 {
                   biker ? (
