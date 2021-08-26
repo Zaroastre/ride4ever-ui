@@ -7,7 +7,11 @@ function Footer() {
   return (
     <footer className="Component Component-Footer">
       <p>
-          <small>Copyright &copy; {(new Date()).getFullYear()}, NIRAH-TECHNOLOGY. All Rights Reserved.</small>
+        <small>
+          Copyright &copy;
+          {(new Date()).getFullYear()}
+          , NIRAH-TECHNOLOGY. All Rights Reserved.
+        </small>
       </p>
     </footer>
   );

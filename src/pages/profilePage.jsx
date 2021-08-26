@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, {
   useState,
+  useEffect,
 } from 'react';
 import { Redirect, withRouter } from 'react-router';
 import { useSelector, connect } from 'react-redux';
@@ -10,7 +11,6 @@ import { Button } from 'primereact/button';
 import MotorbikeForm from '../components/MotorbikeForm';
 import PilotInfoPanel from '../components/PilotInfoPanel';
 import GarageInfoPanel from '../components/GarageInfoPanel';
-import { useEffect } from 'react';
 
 function ProfilePage() {
   const history = useHistory();
@@ -22,7 +22,7 @@ function ProfilePage() {
     if (!biker) {
       history.push('/login');
     }
-  }, [biker]);
+  }, [biker, history]);
 
   const render = () => {
     if (biker && biker.entity) {

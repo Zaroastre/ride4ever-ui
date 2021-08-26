@@ -61,7 +61,7 @@ function OrganizePage({
   const accept = () => {
     roadtrip.startAddress = startAddress;
     roadtrip.stopAddress = stopAddress;
-    roadtrip.status='SOON';
+    roadtrip.status = 'SOON';
     const SERVICE = new RoadtripService();
     SERVICE.create(roadtrip).then(() => {
       setToastInStore({
@@ -88,7 +88,7 @@ function OrganizePage({
 
   const updateRoadtrip = (property, value) => {
     if (Object.keys(roadtrip).includes(property)) {
-      const updatedRoadtrip = {...roadtrip};
+      const updatedRoadtrip = { ...roadtrip };
       updatedRoadtrip[property] = value;
       setRoadTrip(RoadTrip.parse(updatedRoadtrip));
     } else {

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, {
   useState,
   useEffect,
@@ -28,11 +29,20 @@ function RoadTripPage({ match }) {
     }).finally(() => {
       setIsLoading(false);
     });
-  }, [roadtripIdentifier]);
+  }, [roadtripIdentifier, history]);
 
   return (
     <section className="Page Page-RoadTrip">
-      Road Trip
+      {
+        !isLoading ? (
+          <>
+            Road Trip #
+            {roadtrip.identifier}
+          </>
+        ) : (
+          null
+        )
+      }
     </section>
   );
 }
