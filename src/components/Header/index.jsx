@@ -1,8 +1,10 @@
 import React from 'react';
 import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 import { useSelector, connect } from 'react-redux';
 import { Button } from 'primereact/button';
-import { Link } from 'react-router-dom';
+import { Badge } from 'primereact/badge';
+import { Divider } from 'primereact/divider';
 import { setLanguage } from '../../store/language/languageAction';
 
 import DICTIONARY from '../../locales/dictionary';
@@ -22,12 +24,38 @@ function Header() {
           </a>
         </span>
         <span className="SecondaryMenu">
-          <span className="InteractiveIcon">
-            <Button icon="pi pi-bell" tooltip="Notifications" tooltipOptions={{ position: 'bottom' }} />
-          </span>
-          <span className="InteractiveIcon">
-            <Button icon="pi pi-envelope" tooltip="Messages" tooltipOptions={{ position: 'bottom' }} />
-          </span>
+          {(biker) ? (
+            <>
+              <span className="InteractiveIcon">
+                <Button tooltip="Notifications" tooltipOptions={{ position: 'bottom' }}>
+                  <i className="pi pi-bell" />
+                  <span className="BadgeContainer">
+                    <Badge value="2" severity="info" className="p-mr-2" />
+                  </span>
+                </Button>
+              </span>
+              <span className="InteractiveIcon">
+                <Button tooltip="Messages" tooltipOptions={{ position: 'bottom' }}>
+                  <i className="pi pi-envelope" />
+                  <span className="BadgeContainer">
+                    <Badge value="10" severity="warning" className="p-mr-2" />
+                  </span>
+                </Button>
+              </span>
+              <Divider layout="vertical" />
+              <span className="InteractiveIcon">
+                <Link to="/reservation">
+                  <Button tooltip="Reservations" tooltipOptions={{ position: 'bottom' }}>
+                    <i className="pi pi-calendar" />
+                    <span className="BadgeContainer">
+                      <Badge value="10" severity="danger" className="p-mr-2" />
+                    </span>
+                  </Button>
+                </Link>
+              </span>
+              <Divider layout="vertical" />
+            </>
+          ) : (null)}
           <span className="InteractiveIcon">
             <Link to="/profile">
               <Button icon="pi pi-user" tooltip="Account" tooltipOptions={{ position: 'bottom' }} />
@@ -35,11 +63,11 @@ function Header() {
           </span>
         </span>
       </div>
-      <div className="Bar BarLeft">
-        <nav>
-          <ul>
-            {
-              biker ? (
+      {
+        (biker) ? (
+          <div className="Bar BarLeft">
+            <nav>
+              <ul>
                 <li>
                   <Link to="/dashboard">
                     <span className="MenuItemIcon">
@@ -50,21 +78,21 @@ function Header() {
                     </span>
                   </Link>
                 </li>
-              ) : (null)
-            }
-            <li>
-              <Link to="/explore">
-                <span className="MenuItemIcon">
-                  <i className="pi pi-calendar" style={{ fontSize: '1.5rem' }} />
-                </span>
-                <span className="MenuItemText">
-                  {DICTIONARY.MENU.ROADTRIP[language]}
-                </span>
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      </div>
+                <li>
+                  <Link to="/explore">
+                    <span className="MenuItemIcon">
+                      <i className="pi pi-globe" style={{ fontSize: '1.5rem' }} />
+                    </span>
+                    <span className="MenuItemText">
+                      {DICTIONARY.MENU.ROADTRIP[language]}
+                    </span>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        ) : (null)
+      }
     </header>
   );
 }

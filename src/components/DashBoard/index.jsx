@@ -24,13 +24,13 @@ function DashBoard({
     if (!list || list.length === 0) {
       return (
         <Link to={defaultPath}>
-          <Button label={defaultLabel} />
+          <Button label={defaultLabel} icon="pi pi-arrow-right" iconPos="right" />
         </Link>
       );
     }
     return (
       <Link to={path}>
-        <Button label={label} />
+        <Button label={label} icon="pi pi-arrow-right" iconPos="right" />
       </Link>
     );
   };

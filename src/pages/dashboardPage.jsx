@@ -35,7 +35,7 @@ function DashboardPage({
           });
           resetToastInStore();
         });
-      SERVICE.findRoadtrips({ biker_pseudo: biker.entity.pseudo, status: 'COMING_SOON' })
+      SERVICE.findRoadtrips({ biker_pseudo: biker.entity.pseudo, status: 'SOON' })
         .then((roadTrips) => {
           setUpcomingRoadTrips(roadTrips);
         }).catch((exception) => {

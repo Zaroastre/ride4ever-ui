@@ -4,15 +4,17 @@ import React from 'react';
 import { withRouter } from 'react-router';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
+import { Divider } from 'primereact/divider';
+import { InputSwitch } from 'primereact/inputswitch';
 import { Tag } from 'primereact/tag';
 
 import './style.css';
 
-function PilotInfoPanel({
+function GarageInfoPanel({
   motorbikes,
 }) {
   return (
-    <section className="Component Component-PilotInfoPanel">
+    <section className="Component Component-GarageInfoPanel">
       {motorbikes.map((motorbike) => (
         <div className="Motorbike">
           <Card
@@ -29,13 +31,69 @@ function PilotInfoPanel({
               </div>
             )}
           >
-            <p>{String(motorbike.engineDisplacement).concat(' cm3')}</p>
-            <Tag value={motorbike.type} />
-            <p>{String(' of ').concat(motorbike.year)}</p>
-            <p>{motorbike.color}</p>
-            <p>{String(motorbike.fuelTankSize).concat(' liters')}</p>
-            <p>{String(motorbike.mileage).concat(' kms')}</p>
-            <p>{motorbike.isRestrained}</p>
+            <Divider />
+            <table>
+              <tr>
+                <th>
+                  Engine Displacement
+                </th>
+                <td>
+                  <p>{String(motorbike.engineDisplacement).concat(' cm3')}</p>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Type
+                </th>
+                <td>
+                  <Tag value={motorbike.type} />
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Year
+                </th>
+                <td>
+                  <p>{motorbike.year}</p>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Color
+                </th>
+                <td>
+                  <p>{motorbike.color}</p>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Fuel Tank Size
+                </th>
+                <td>
+                  <p>{String(motorbike.fuelTankSize).concat(' liters')}</p>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Mileage
+                </th>
+                <td>
+                  <p>{String(motorbike.mileage).concat(' kms')}</p>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Is Restrained
+                </th>
+                <td>
+                  <InputSwitch
+                    checked={motorbike.isRestrained}
+                    onChange={(e) => console.log(e.value)}
+                  />
+                </td>
+              </tr>
+            </table>
+            <Divider />
           </Card>
         </div>
       ))}
@@ -43,4 +101,4 @@ function PilotInfoPanel({
   );
 }
 
-export default withRouter(PilotInfoPanel);
+export default withRouter(GarageInfoPanel);

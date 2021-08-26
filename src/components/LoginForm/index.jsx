@@ -111,6 +111,7 @@ function LoginForm({
                     onChange={(event) => setPassword(event.target.value)}
                     minLength={8}
                     required
+                    toggleMask
                     aria-describedby="password-field-help"
                   />
                   <label htmlFor="email">Password*</label>

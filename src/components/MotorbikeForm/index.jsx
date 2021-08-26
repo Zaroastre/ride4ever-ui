@@ -2,6 +2,7 @@
 /* eslint-disable react/prop-types */
 import React, {
   useState,
+  useEffect,
   useRef,
 } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -18,38 +19,30 @@ import { Steps } from 'primereact/steps';
 import { Dialog } from 'primereact/dialog';
 import { ColorPicker } from 'primereact/colorpicker';
 
+import MotorbikeService from '../../services/motorbikeService';
+import BikerService from '../../services/bikerService';
+import Motorbike from '../../entities/motorbike';
 import { setToast, resetToast } from '../../store/toast/toastAction';
-import { setBiker, resetBiker } from '../../store/biker/bikerAction';
+import { setBiker } from '../../store/biker/bikerAction';
 
 import './style.css';
 
 function MotorbikeForm({
+  biker,
+  moto,
   title,
   setToastInStore,
   resetToastInStore,
-  setPilotInStore,
-  resetPilotInStore,
+  setBikerInStore,
+  onHide,
 }) {
-  const history = useHistory();
   const toast = useRef(null);
-  const [, setCookie] = useCookies();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [brand, setBrand] = useState(null);
-  const [model, setModel] = useState(null);
-  const [engineDisplacement, setEngineDisplacement] = useState(0);
-  const [year, setYear] = useState(0);
-
-  const [type, setType] = useState(null);
-  const [color, setColor] = useState(null);
-  const [fuelTankSize, setFuelTankSize] = useState(0);
-  const [mileage, setMileage] = useState(0);
-
-  const [licensePlate, setLicensePlate] = useState(null);
-  const [isRestrained, setIsRestrained] = useState(false);
-
-  const [picture, setPicture] = useState(null);
+  const [motorbike, setMotorbike] = useState(new Motorbike());
+  const [brands, setBrands] = useState([]);
+  const [types, setTypes] = useState([]);
 
   const interactiveItems = [
     {
@@ -78,6 +71,93 @@ function MotorbikeForm({
     },
   ];
 
+  useEffect(() => {
+    if (!moto) {
+      setMotorbike(new Motorbike());
+    } else {
+      setMotorbike(Motorbike.parse(moto));
+    }
+  }, [moto, setMotorbike]);
+
+  const updateMotorbike = (property, value) => {
+    if (Object.keys(motorbike).includes(property)) {
+      const updatedMotorbike = { ...motorbike };
+      updatedMotorbike[property] = value;
+      setMotorbike(Motorbike.parse(updatedMotorbike));
+    } else {
+      console.log(String('Property not found: ').concat(property));
+    }
+  };
+
+  useEffect(() => {
+    const SERVICE = new MotorbikeService();
+    SERVICE.getBrands().then((array) => {
+      setBrands(array);
+    }).catch((exception) => {
+      console.error(exception);
+    });
+    SERVICE.getMotorbikesTypes().then((array) => {
+      setTypes(array);
+    }).catch((exception) => {
+      console.error(exception);
+    });
+  }, [setBrands]);
+
+  const updateBikerMotorbike = () => {
+    const SERVICE = new BikerService();
+    if (biker && motorbike) {
+      biker.motorbikes.push(motorbike);
+      SERVICE.update(biker.identifier, biker).then((updatedBiker) => {
+        setBikerInStore({
+          entity: updatedBiker,
+        });
+        setToastInStore({
+          severity: 'success',
+          summary: 'Biker Motorcycles Updated',
+          detail: 'You are now connected.',
+        });
+        resetToastInStore();
+        onHide();
+      }).catch((exception) => {
+        setToastInStore({
+          severity: 'error',
+          summary: 'Biker Motorcycles Update Failure',
+          detail: exception.error,
+        });
+        resetToastInStore();
+      });
+    }
+  };
+
+  const createHandle = () => {
+    const SERVICE = new MotorbikeService();
+    if (motorbike.identifier <= 0) {
+      SERVICE.create(motorbike).then((updatedEntity) => {
+        setMotorbike(updatedEntity);
+        updateBikerMotorbike();
+      }).catch((exception) => {
+        setToastInStore({
+          severity: 'error',
+          summary: 'Address Creation Failure',
+          detail: exception.error,
+        });
+        resetToastInStore();
+      });
+    } else {
+      SERVICE.update(motorbike.identifier, motorbike).then((updatedEntity) => {
+        setMotorbike(updatedEntity);
+        updateBikerMotorbike();
+      }).catch((exception) => {
+        setToastInStore({
+          severity: 'error',
+          summary: 'Address Update Failure',
+          detail: exception.error,
+        });
+        resetToastInStore();
+      });
+    }
+  };
+
   const showPanel = () => {
     switch (activeIndex) {
       case 0:
@@ -92,9 +172,9 @@ function MotorbikeForm({
                   <span className="p-float-label p-input-icon-right">
                     <Dropdown
                       id="brand"
-                      value={brand}
-                      options={[]}
-                      onChange={(e) => setBrand(e.value)}
+                      value={motorbike.brand}
+                      options={brands}
+                      onChange={(e) => updateMotorbike('brand', e.value)}
                       required
                     />
                     <label htmlFor="brand">Brand*</label>
@@ -110,9 +190,9 @@ function MotorbikeForm({
                   </span>
                   <span className="p-float-label p-input-icon-right">
                     <Dropdown
-                      value={model}
+                      value={motorbike.model}
                       options={[]}
-                      // onChange={onCountryChange}
+                      onChange={(event) => updateMotorbike('model', event.value)}
                       optionLabel="name"
                       filter
                       showClear
@@ -133,8 +213,8 @@ function MotorbikeForm({
                   </span>
                   <span className="p-float-label p-input-icon-right">
                     <InputNumber
-                      value={engineDisplacement}
-                      onValueChange={(e) => setEngineDisplacement(e.value)}
+                      value={motorbike.engineDisplacement}
+                      onValueChange={(e) => updateMotorbike('engineDisplacement', e.value)}
                       suffix=" cm3"
                       min={0}
                       max={2500}
@@ -152,8 +232,8 @@ function MotorbikeForm({
                   </span>
                   <span className="p-float-label p-input-icon-right">
                     <InputNumber
-                      value={year}
-                      onValueChange={(e) => setYear(e.value)}
+                      value={motorbike.year}
+                      onValueChange={(e) => updateMotorbike('year', e.value)}
                       min={1600}
                       mode="decimal"
                       required
@@ -166,7 +246,6 @@ function MotorbikeForm({
             </dl>
           </div>
         );
-
       case 1:
         return (
           <div>
@@ -179,9 +258,9 @@ function MotorbikeForm({
                   <span className="p-float-label p-input-icon-right">
                     <Dropdown
                       id="type"
-                      value={type}
-                      options={[]}
-                      onChange={(e) => setType(e.value)}
+                      value={motorbike.type}
+                      options={types}
+                      onChange={(e) => updateMotorbike('type', e.value)}
                       required
                     />
                     <label htmlFor="type">Type*</label>
@@ -198,14 +277,8 @@ function MotorbikeForm({
                   <span className="p-float-label p-input-icon-right">
                     <ColorPicker
                       id="color"
-                      value={color}
-                      onChange={(e) => setColor(e.value)}
-                      required
-                    />
-                    <ColorPicker
-                      id="color"
-                      value={color}
-                      onChange={(e) => setColor(e.value)}
+                      value={motorbike.color}
+                      onChange={(e) => updateMotorbike('color', e.value)}
                       required
                     />
                     <label htmlFor="color">color*</label>
@@ -222,8 +295,8 @@ function MotorbikeForm({
                   <span className="p-float-label p-input-icon-right">
                     <InputNumber
                       id="fuelTankSize"
-                      value={fuelTankSize}
-                      onValueChange={(e) => setFuelTankSize(e.value)}
+                      value={motorbike.fuelTankSize}
+                      onValueChange={(e) => updateMotorbike('fuelTankSize', e.value)}
                       suffix=" liters"
                       min={0}
                       max={100}
@@ -242,8 +315,8 @@ function MotorbikeForm({
                   <span className="p-float-label p-input-icon-right">
                     <InputNumber
                       id="mileage"
-                      value={mileage}
-                      onValueChange={(e) => setMileage(e.value)}
+                      value={motorbike.mileage}
+                      onValueChange={(e) => updateMotorbike('mileage', e.value)}
                       suffix=" kms"
                       required
                       min={0}
@@ -269,9 +342,9 @@ function MotorbikeForm({
                     <InputMask
                       id="licensePlate"
                       mask="aa-999-aa"
-                      value={licensePlate}
+                      value={motorbike.licensePlate}
                       required
-                      onChange={(e) => setLicensePlate(e.value)}
+                      onChange={(e) => updateMotorbike('licensePlate', e.value)}
                     />
                     <label htmlFor="licensePlate">License Plate*</label>
                   </span>
@@ -287,8 +360,8 @@ function MotorbikeForm({
                   <span className="p-float-label p-input-icon-right">
                     <InputSwitch
                       id="isRestrained"
-                      checked={isRestrained}
-                      onChange={(e) => setIsRestrained(e.value)}
+                      checked={motorbike.isRestrained}
+                      onChange={(e) => updateMotorbike('isRestrained', e.value)}
                     />
                     <label htmlFor="isRestrained">Is Restrained*</label>
                   </span>
@@ -297,7 +370,6 @@ function MotorbikeForm({
             </dl>
           </div>
         );
-
       default:
         break;
     }
@@ -308,7 +380,7 @@ function MotorbikeForm({
     if (activeIndex === 0) {
       return (
         <div>
-          <Button label="Cancel" icon="pi pi-times" className="p-button-secondary" />
+          <Button label="Cancel" icon="pi pi-times" className="p-button-secondary" onClick={() => onHide()} />
           <Button label="Next" icon="pi pi-angle-right" className="p-button-primary" onClick={() => setActiveIndex(activeIndex + 1)} />
         </div>
       );
@@ -317,7 +389,7 @@ function MotorbikeForm({
       return (
         <div>
           <Button label="Previous" icon="pi pi-angle-left" className="p-button-secondary" onClick={() => setActiveIndex(activeIndex - 1)} />
-          <Button label="Create" icon="pi pi-plus" className="p-button-primary" />
+          <Button label="Create" icon="pi pi-plus" className="p-button-primary" onClick={() => createHandle()} />
         </div>
       );
     }
@@ -331,7 +403,7 @@ function MotorbikeForm({
 
   return (
     <section className="Component Component-Login">
-      <Dialog header="Register a new motorbike" visible style={{ width: '50vw' }} footer={footer}>
+      <Dialog header="Register a new motorbike" visible style={{ width: '50vw' }} onHide={onHide} footer={footer}>
         <Steps
           model={interactiveItems}
           activeIndex={activeIndex}
@@ -349,6 +421,7 @@ function MotorbikeForm({
 }
 
 const mapDispatchToProps = (dispatch) => ({
+  setBikerInStore: (data) => dispatch(setBiker(data)),
   setToastInStore: (data) => dispatch(setToast(data)),
   resetToastInStore: () => dispatch(resetToast()),
 });

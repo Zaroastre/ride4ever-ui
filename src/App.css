@@ -13,7 +13,7 @@ body {
 main {
   padding: 2rem;
   padding-top: 6rem;
-  padding-left: 10rem;
+  padding-left: 8rem;
   min-height: calc(100vh - 2rem);
 }
 
@@ -31,7 +31,6 @@ input {
   padding: 0;
   box-sizing: border-box;
   width: 100%;
-  background: red;
 }
 
 .p-button {
@@ -56,3 +55,13 @@ input {
 .Tag-TEMINATED {
   background: rgb(100, 100, 100);
 }
+
+/* section a > button.p-button {
+  background: rgba(150,0,0,1);
+  border: solid 2px rgba(150,0,0,1);
+}
+
+section a > button.p-button:not(a):not(.p-disabled):hover {
+  background: rgba(200,0,0,1);
+  border: solid 2px rgba(150,0,0,1);
+} */
