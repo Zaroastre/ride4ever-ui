@@ -1,12 +1,14 @@
 import axios from 'axios';
 import Pilot from '../entities/biker';
+import AbstractService from './abstractService';
 
 export default class RegistrationService {
   constructor() {
     this.url = String(process.env.REACT_APP_API_URL).concat('/registration');
     this.headers = {
-      // Authorization: AbstractCrudService.getDefaultJwt(),
+      Authorization: AbstractService.getJwt(),
       'Content-Type': 'application/json',
+      'Session-ID': AbstractService.getSessionID(),
     };
   }
 

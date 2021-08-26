@@ -2,6 +2,7 @@ import Biker from './biker';
 
 export default class Session {
   constructor() {
+    this.id = null;
     this.biker = null;
     this.jwt = null;
   }
@@ -19,6 +20,7 @@ export default class Session {
       }
       if (entity !== null) {
         entity = new Session();
+        entity.id = json.id;
         entity.biker = Biker.parse(json.biker);
         entity.jwt = json.jwt;
       }

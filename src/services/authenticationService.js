@@ -1,12 +1,15 @@
 import axios from 'axios';
 import Credential from '../entities/credential';
 import Session from '../entities/session';
+import AbstractService from './abstractService';
 
 export default class AuthenticationService {
   constructor() {
     this.url = String(process.env.REACT_APP_API_URL).concat('/authentication');
     this.headers = {
-      // Authorization: AbstractCrudService.getDefaultJwt(),
+      Authorization: AbstractService.getJwt(),
+      'Content-Type': 'application/json',
+      'Session-ID': AbstractService.getSessionID(),
     };
   }
 
@@ -33,7 +36,7 @@ export default class AuthenticationService {
   logout(session) {
     return new Promise((resolve, reject) => {
       if (session instanceof Session) {
-        axios.delete(String(this.url).concat('/logout'), session, { headers: this.headers })
+        axios.delete(String(this.url).concat('/logout/').concat(session.id), { headers: this.headers })
           .then(() => {
             resolve();
           })

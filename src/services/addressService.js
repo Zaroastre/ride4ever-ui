@@ -1,12 +1,14 @@
 import axios from 'axios';
 import Address from '../entities/address';
+import AbstractService from './abstractService';
 
 export default class AddressService {
   constructor() {
     this.url = String(process.env.REACT_APP_API_URL).concat('/addresses');
     this.headers = {
-      // Authorization: AbstractCrudService.getDefaultJwt(),
+      Authorization: AbstractService.getJwt(),
       'Content-Type': 'application/json',
+      'Session-ID': AbstractService.getSessionID(),
     };
   }
 

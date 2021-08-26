@@ -1,12 +1,14 @@
 import axios from 'axios';
 import Biker from '../entities/biker';
+import AbstractService from './abstractService';
 
 export default class BikerService {
   constructor() {
     this.url = String(process.env.REACT_APP_API_URL).concat('/bikers');
     this.headers = {
-      // Authorization: AbstractCrudService.getDefaultJwt(),
+      Authorization: AbstractService.getJwt(),
       'Content-Type': 'application/json',
+      'Session-ID': AbstractService.getSessionID(),
     };
   }
 

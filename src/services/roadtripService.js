@@ -1,12 +1,14 @@
 import axios from 'axios';
 import RoadTrip from '../entities/roadtrip';
+import AbstractService from './abstractService';
 
 export default class RoadtripService {
   constructor() {
     this.url = String(process.env.REACT_APP_API_URL).concat('/roadtrips');
     this.headers = {
-      // Authorization: AbstractCrudService.getDefaultJwt(),
+      Authorization: AbstractService.getJwt(),
       'Content-Type': 'application/json',
+      'Session-ID': AbstractService.getSessionID(),
     };
   }
 

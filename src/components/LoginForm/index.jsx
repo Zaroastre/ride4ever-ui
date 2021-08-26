@@ -45,6 +45,7 @@ function LoginForm({
     CREDENTIAL.password = password;
     SERVICE.login(CREDENTIAL).then((session) => {
       setCookie('jwt', session.jwt);
+      setCookie('sessionid', session.id);
       setBikerInStore({
         entity: session.biker,
       });

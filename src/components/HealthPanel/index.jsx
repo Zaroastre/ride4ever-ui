@@ -9,13 +9,12 @@ import './style.css';
 function HealthPanel({
   biker,
 }) {
-  console.log(biker);
   return (
     <section className="Component Component-HealthPanel">
       <table>
         <tr>
           <th>Birth Date (age)</th>
-          <td>{biker.birthDate.toLocaleDateString()}</td>
+          <td>{new Date(biker.birthDate).toLocaleDateString()}</td>
         </tr>
         <tr>
           <th>Gender</th>

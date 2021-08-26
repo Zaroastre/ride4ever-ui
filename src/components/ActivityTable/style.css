@@ -1,0 +1,10 @@
+.Tag-Event-LOGIN {
+    background: rgba(100,0,0,1);
+}
+.Tag-Event-LOGOUT {
+    background: rgba(200,50,0,1);
+}
+
+.Tag-Event-ACCOUNT_REGISTRATION {
+    background: rgba(255,0,50,1);
+}

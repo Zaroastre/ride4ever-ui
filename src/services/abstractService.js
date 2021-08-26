@@ -1,20 +1,41 @@
 import axios from 'axios';
 
-export default class AbstractCrudService {
+export default class AbstractService {
   constructor(url) {
     this.url = url;
     this.headers = {
-      Authorization: AbstractCrudService.getDefaultJwt(),
+      Authorization: AbstractService.getJwt(),
+      'Content-Type': 'application/json',
+      'Session-ID': AbstractService.getSessionID(),
     };
   }
 
-  static getDefaultJwt() {
-    let jwt = document.cookie.split('=')[1];
-    if (jwt) {
-      jwt = `Bearer ${jwt}`;
-      return jwt;
+  static getJwt() {
+    let entity = null;
+    const cookies = document.cookie.split(';');
+    for (let index = 0; index < cookies.length; index += 1) {
+      const cookieName = cookies[index].split('=')[0].trim();
+      const cookieValue = cookies[index].split('=')[1].trim();
+      if (cookieName.toLowerCase() === 'jwt') {
+        entity = String('Bearer ').concat(cookieValue);
+        break;
+      }
     }
-    return null;
+    return entity;
+  }
+
+  static getSessionID() {
+    let entity = null;
+    const cookies = document.cookie.split(';');
+    for (let index = 0; index < cookies.length; index += 1) {
+      const cookieName = cookies[index].split('=')[0].trim();
+      const cookieValue = cookies[index].split('=')[1].trim();
+      if (cookieName.toLowerCase() === 'sessionid') {
+        entity = cookieValue;
+        break;
+      }
+    }
+    return entity;
   }
 
   /**

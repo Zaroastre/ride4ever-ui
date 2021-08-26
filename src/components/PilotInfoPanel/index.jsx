@@ -58,7 +58,7 @@ function PilotInfoPanel({
             Level
             {biker.level}
           </p>
-          <p>{String('Member since ').concat(biker.registrationDate.toLocaleString())}</p>
+          <p>{String('Member since ').concat(new Date(biker.registrationDate).toLocaleString())}</p>
           <p>{String('Works as ').concat(biker.work)}</p>
         </div>
       </Card>
