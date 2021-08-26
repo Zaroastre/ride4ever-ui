@@ -27,9 +27,7 @@ function RoadTripList({
     return (null);
   };
 
-  const formatDate = (date) => {
-    return date.toLocaleString().toString().substring(0, 17);
-  }
+  const formatDate = (date) => date.toLocaleString().toString().substring(0, 17);
 
   const detailsTemplate = (roadtrip) => {
     if (roadtrip) {
@@ -70,17 +68,17 @@ function RoadTripList({
     if (roadtrip) {
       let classNameCandidates = '';
       let classNameBikers = '';
-      if (roadtrip.candidates.length * 100 / roadtrip.maxBikers < 80) {
+      if (((roadtrip.candidates.length * 100) / roadtrip.maxBikers) < 80) {
         classNameCandidates = 'alert-level-ras';
-      } else if (roadtrip.candidates.length * 100 / roadtrip.maxBikers < 100) {
+      } else if (((roadtrip.candidates.length * 100) / roadtrip.maxBikers) < 100) {
         classNameCandidates = 'alert-level-limit';
       } else {
         classNameCandidates = 'alert-level-full';
       }
 
-      if (roadtrip.bikers.length * 100 / roadtrip.maxBikers < 80) {
+      if (((roadtrip.bikers.length * 100) / roadtrip.maxBikers) < 80) {
         classNameBikers = 'alert-level-ras';
-      } else if (roadtrip.bikers.length * 100 / roadtrip.maxBikers < 100) {
+      } else if (((roadtrip.bikers.length * 100) / roadtrip.maxBikers) < 100) {
         classNameBikers = 'alert-level-limit';
       } else {
         classNameBikers = 'alert-level-full';
@@ -95,26 +93,24 @@ function RoadTripList({
             {String('Bikers: ').concat(roadtrip.bikers.length).concat('/').concat(roadtrip.maxBikers)}
           </p>
         </>
-      )
+      );
     }
     return (null);
-  }
+  };
 
-  const startDateTemplate = (roadtrip) => {
-    return formatDate(roadtrip.startDate);
-  }
+  const startDateTemplate = (roadtrip) => formatDate(roadtrip.startDate);
 
-  const stopDateTemplate = (roadtrip) => {
-    return formatDate(roadtrip.endDate);
-  }
-  
-  const startCityTemplate = (roadtrip) => {
-    return String(roadtrip.startAddress.city).concat(' (').concat(roadtrip.startAddress.zipCode).concat(')');
-  }
+  const stopDateTemplate = (roadtrip) => formatDate(roadtrip.endDate);
 
-  const stopCityTemplate = (roadtrip) => {
-    return String(roadtrip.stopAddress.city).concat(' (').concat(roadtrip.stopAddress.zipCode).concat(')');
-  }
+  const startCityTemplate = (roadtrip) => String(roadtrip.startAddress.city)
+    .concat(' (')
+    .concat(roadtrip.startAddress.zipCode)
+    .concat(')');
+
+  const stopCityTemplate = (roadtrip) => String(roadtrip.stopAddress.city)
+    .concat(' (')
+    .concat(roadtrip.stopAddress.zipCode)
+    .concat(')');
 
   const statusTemplate = (roadtrip) => (
     <Tag className={String('Tag-').concat(roadtrip.status)} value={roadtrip.status} />

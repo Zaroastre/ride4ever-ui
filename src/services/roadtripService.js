@@ -53,6 +53,7 @@ export default class RoadtripService {
         });
     });
   }
+
   findById(identifier) {
     return new Promise((resolve, reject) => {
       axios.get(String(this.url).concat('/').concat(identifier), { headers: this.headers })
@@ -69,7 +70,6 @@ export default class RoadtripService {
         });
     });
   }
-
 
   getRoadtripsTypes() {
     return new Promise((resolve, reject) => {

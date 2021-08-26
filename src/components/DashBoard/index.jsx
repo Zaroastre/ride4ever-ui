@@ -6,11 +6,11 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card } from 'primereact/card';
 import { Divider } from 'primereact/divider';
+import { Button } from 'primereact/button';
 
 import DICTIONARY from '../../locales/dictionary';
 
 import './style.css';
-import { Button } from 'primereact/button';
 
 function DashBoard({
   organizedRoadTrips,
@@ -18,7 +18,6 @@ function DashBoard({
   pendingRoadTripsRequests,
   oldRoadTrips,
 }) {
-
   const language = useSelector((state) => state.language.value);
 
   const footerTemplate = (list, label, path, defaultLabel, defaultPath) => {
@@ -65,19 +64,19 @@ function DashBoard({
       {
         upcomingRoadTrips ? (
           <Card
-          title={DICTIONARY.PAGE.DASHBOARD.UPCOMING_ROADTRIPS.TITLE[language]}
+            title={DICTIONARY.PAGE.DASHBOARD.UPCOMING_ROADTRIPS.TITLE[language]}
             className="DashBoard-Item"
             footer={footerTemplate(
               upcomingRoadTrips,
               DICTIONARY.PAGE.DASHBOARD.UPCOMING_ROADTRIPS.BUTTON.OPTION_1[language],
               '/tbd',
               DICTIONARY.PAGE.DASHBOARD.UPCOMING_ROADTRIPS.BUTTON.OPTION_2[language],
-              '/join'
+              '/join',
             )}
           >
             {(upcomingRoadTrips.length === 0) ? (
               <>
-              {DICTIONARY.PAGE.DASHBOARD.UPCOMING_ROADTRIPS.BODY[language]}
+                {DICTIONARY.PAGE.DASHBOARD.UPCOMING_ROADTRIPS.BODY[language]}
               </>
             ) : (
               <h4>{upcomingRoadTrips.length}</h4>
@@ -88,19 +87,19 @@ function DashBoard({
       {
         pendingRoadTripsRequests ? (
           <Card
-          title={DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.TITLE[language]}
+            title={DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.TITLE[language]}
             className="DashBoard-Item"
             footer={footerTemplate(
               pendingRoadTripsRequests,
               DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.BUTTON.OPTION_1[language],
               '/tbd',
               DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.BUTTON.OPTION_2[language],
-              '/join'
+              '/join',
             )}
           >
             {(pendingRoadTripsRequests.length === 0) ? (
               <>
-              {DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.BODY[language]}
+                {DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.BODY[language]}
               </>
             ) : (
               <h4>{pendingRoadTripsRequests.length}</h4>
@@ -112,19 +111,19 @@ function DashBoard({
       {
         oldRoadTrips ? (
           <Card
-          title={DICTIONARY.PAGE.DASHBOARD.OLD_ROADTRIPS.TITLE[language]}
+            title={DICTIONARY.PAGE.DASHBOARD.OLD_ROADTRIPS.TITLE[language]}
             className="DashBoard-Item"
             footer={footerTemplate(
               oldRoadTrips,
               DICTIONARY.PAGE.DASHBOARD.OLD_ROADTRIPS.BUTTON.OPTION_1[language],
               '/join',
               DICTIONARY.PAGE.DASHBOARD.OLD_ROADTRIPS.BUTTON.OPTION_2[language],
-              '/join'
+              '/join',
             )}
           >
             {(oldRoadTrips.length === 0) ? (
               <>
-              {DICTIONARY.PAGE.DASHBOARD.OLD_ROADTRIPS.BODY[language]}
+                {DICTIONARY.PAGE.DASHBOARD.OLD_ROADTRIPS.BODY[language]}
               </>
             ) : (
               <h4>{oldRoadTrips.length}</h4>

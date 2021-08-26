@@ -3,13 +3,13 @@ import React, {
   useEffect,
 } from 'react';
 import { withRouter } from 'react-router';
-import DefaultSearchForm from '../components/DefaultSearchForm';
+// import DefaultSearchForm from '../components/DefaultSearchForm';
 import RoadTripList from '../components/RoadTripList';
 import RoadtripService from '../services/roadtripService';
 
 function JoinPage() {
   const [roadtrips, setRoadTrips] = useState([]);
-  const [search, setSearch] = useState([]);
+  // const [search, setSearch] = useState([]);
 
   useEffect(() => {
     const SERVICE = new RoadtripService();
@@ -20,11 +20,11 @@ function JoinPage() {
     });
   }, [setRoadTrips]);
 
-  const onSearchHandle = (searchQuery) => {
+  /* const onSearchHandle = (searchQuery) => {
     setRoadTrips([]);
     console.log(search);
     console.log(searchQuery);
-  };
+  }; */
 
   return (
     <section className="Page Page-JoinPage">
