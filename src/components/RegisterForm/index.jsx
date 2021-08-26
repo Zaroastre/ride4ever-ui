@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, {
   useState,
+  useEffect,
 } from 'react';
 import { withRouter } from 'react-router';
 import { useHistory, Link } from 'react-router-dom';
@@ -24,6 +25,7 @@ import AuthenticationService from '../../services/authenticationService';
 import Credential from '../../entities/credential';
 import RegistrationService from '../../services/registrationService';
 import Biker from '../../entities/biker';
+import BikerService from '../../services/bikerService';
 
 function RegisterForm({
   title,
@@ -34,27 +36,24 @@ function RegisterForm({
 }) {
   const history = useHistory();
   const [, setCookie] = useCookies();
-  const [firstName, setFirstName] = useState(null);
-  const [lastName, setLastName] = useState(null);
-  const [pseudo, setPseudo] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [phoneNumber, setPhoneNumber] = useState(null);
-  const [birthDate, setBirthDate] = useState(null);
-  const [gender, setGender] = useState(null);
-  const [password, setPassword] = useState(null);
+  const [biker, setTheBiker] = useState(new Biker());
+  const [genders, setGenders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const GENDERS = [
-    'MAN',
-    'WOMAN',
-    'NEUTRAL',
-  ];
+  useEffect(() => {
+    const SERVICE = new BikerService();
+    SERVICE.getGenders().then((array) => {
+      setGenders(array);
+    }).catch((exception) => {
+      console.error(exception);
+    });
+  }, [setGenders]);
 
   const login = () => {
     const SERVICE = new AuthenticationService();
     const CREDENTIAL = new Credential();
-    CREDENTIAL.username = email;
-    CREDENTIAL.password = password;
+    CREDENTIAL.username = biker.email;
+    CREDENTIAL.password = biker.password;
     SERVICE.login(CREDENTIAL).then((session) => {
       setCookie('jwt', session.jwt);
       setBikerInStore({
@@ -66,7 +65,7 @@ function RegisterForm({
         detail: 'You are now connected.',
       });
       resetToastInStore();
-      history.push('/profile');
+      history.push('/dashboard');
     }).catch((exception) => {
       resetBikerInStore();
       setToastInStore({
@@ -84,23 +83,14 @@ function RegisterForm({
     event.preventDefault();
     setIsLoading(true);
     const SERVICE = new RegistrationService();
-    const PILOT = new Biker();
-    PILOT.firstName = firstName;
-    PILOT.lastName = lastName;
-    PILOT.pseudo = pseudo;
-    PILOT.email = email;
-    PILOT.phoneNumber = phoneNumber;
-    PILOT.birthDate = birthDate;
-    PILOT.gender = gender;
-    PILOT.password = password;
-    PILOT.address = null;
-    SERVICE.create(PILOT).then(() => {
+    SERVICE.create(biker).then((updatedBiker) => {
       setToastInStore({
         severity: 'success',
         summary: 'Registration',
         detail: 'Your account is successfully created.',
       });
       resetToastInStore();
+      setTheBiker(updatedBiker);
       login();
     }).catch((exception) => {
       resetBikerInStore();
@@ -113,6 +103,16 @@ function RegisterForm({
     }).finally(() => {
       setIsLoading(false);
     });
+  };
+
+  const updateBiker = (property, value) => {
+    if (Object.keys(biker).includes(property)) {
+      const updatedBiker = { ...biker };
+      updatedBiker[property] = value;
+      setTheBiker(Biker.parse(updatedBiker));
+    } else {
+      console.log(String('Property not found: ').concat(property));
+    }
   };
 
   return (
@@ -129,8 +129,8 @@ function RegisterForm({
                   <span className="p-float-label p-input-icon-right">
                     <InputText
                       id="firstName"
-                      value={firstName}
-                      onChange={(event) => setFirstName(event.target.value)}
+                      value={biker.firstName}
+                      onChange={(event) => updateBiker('firstName', event.target.value)}
                       autoFocus
                       required
                       pattern="^([a-zA-Z]{1,}([-])?){1,}[a-zA-Z]{1,}$"
@@ -151,8 +151,8 @@ function RegisterForm({
                   <span className="p-float-label p-input-icon-right">
                     <InputText
                       id="lastName"
-                      value={lastName}
-                      onChange={(event) => setLastName(event.target.value)}
+                      value={biker.lastName}
+                      onChange={(event) => updateBiker('lastName', event.target.value)}
                       required
                       pattern="^([a-zA-Z]{1,}([-])?){1,}[a-zA-Z]{1,}$"
                       minLength={2}
@@ -172,8 +172,8 @@ function RegisterForm({
                   <span className="p-float-label p-input-icon-right">
                     <InputText
                       id="pseudo"
-                      value={pseudo}
-                      onChange={(event) => setPseudo(event.target.value)}
+                      value={biker.pseudo}
+                      onChange={(event) => updateBiker('pseudo', event.target.value)}
                       required
                       pattern="^([a-zA-Z]{1,}([-])?){1,}[a-zA-Z]{1,}$"
                       minLength={2}
@@ -193,8 +193,8 @@ function RegisterForm({
                   <span className="p-float-label p-input-icon-right">
                     <Calendar
                       id="birthDate"
-                      value={birthDate}
-                      onChange={(e) => setBirthDate(e.value)}
+                      value={biker.birthDate}
+                      onChange={(e) => updateBiker('birthDate', e.value)}
                       mask="99/99/9999"
                       dateFormat="dd/mm/yy"
                       required
@@ -213,9 +213,9 @@ function RegisterForm({
                   <span className="p-float-label p-input-icon-right">
                     <Dropdown
                       id="gender"
-                      value={gender}
-                      options={GENDERS}
-                      onChange={(e) => setGender(e.value)}
+                      value={biker.gender}
+                      options={genders}
+                      onChange={(e) => updateBiker('gender', e.value)}
                       required
                       placeholder="Select a gender"
                     />
@@ -233,8 +233,8 @@ function RegisterForm({
                   <span className="p-float-label p-input-icon-right">
                     <InputText
                       id="email"
-                      value={email}
-                      onChange={(event) => setEmail(event.target.value)}
+                      value={biker.email}
+                      onChange={(event) => updateBiker('email', event.target.value)}
                       required
                       minLength={5}
                       pattern="^([a-z0-9]{1,}([-._])?){1,}[a-z0-9]{1,}@([a-z0-9]{2,}.){1,}[a-z]{2,}$"
@@ -256,8 +256,8 @@ function RegisterForm({
                       id="phoneNumber"
                       mask="99.99.99.99.99"
                       required
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.value)}
+                      value={biker.phoneNumber}
+                      onChange={(e) => updateBiker('phoneNumber', e.value)}
                     />
                     <label htmlFor="phoneNumber">Phone number*</label>
                   </span>
@@ -273,10 +273,11 @@ function RegisterForm({
                   <span className="p-float-label p-input-icon-right">
                     <Password
                       id="password"
-                      value={password}
-                      onChange={(event) => setPassword(event.target.value)}
+                      value={biker.password}
+                      onChange={(event) => updateBiker('password', event.target.value)}
                       minLength={8}
                       required
+                      toggleMask
                       aria-describedby="password-field-help"
                     />
                     <label htmlFor="email">Password*</label>
@@ -292,7 +293,7 @@ function RegisterForm({
                   label="Register"
                   onClick={register}
                   // eslint-disable-next-line max-len
-                  disabled={!firstName || !lastName || !email || !phoneNumber || !birthDate || !gender || !password}
+                  disabled={!biker.firstName || !biker.lastName || !biker.email || !biker.phoneNumber || !biker.birthDate || !biker.gender || !biker.password}
                   loading={isLoading}
                 />
               </span>

@@ -214,6 +214,7 @@ function RecoveryForm({ title, onLoginSuccess, onLoginFailure }) {
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
                       required
+                      toggleMask
                       aria-describedby="password-field-help"
                     />
                     <label htmlFor="email">Password*</label>
@@ -233,6 +234,7 @@ function RecoveryForm({ title, onLoginSuccess, onLoginFailure }) {
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
                       required
+                      toggleMask
                       aria-describedby="password-field-help"
                     />
                     <label htmlFor="email">Password*</label>

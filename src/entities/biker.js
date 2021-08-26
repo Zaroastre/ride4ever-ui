@@ -7,7 +7,7 @@ export default class Biker {
     this.firstName = null;
     this.lastName = null;
     this.pseudo = null;
-    this.birthDate = null;
+    this.birthDate = new Date();
     this.registrationDate = new Date();
     this.driverLicenceDate = null;
     this.gender = null;
@@ -46,8 +46,8 @@ export default class Biker {
         entity.firstName = json.firstName;
         entity.lastName = json.lastName;
         entity.pseudo = json.pseudo;
-        entity.birthDate = json.birthDate;
-        entity.registrationDate = json.registrationDate;
+        entity.birthDate = new Date(json.birthDate);
+        entity.registrationDate = new Date(json.registrationDate);
         entity.driverLicenceDate = json.driverLicenceDate;
         entity.gender = json.gender;
         entity.email = json.email;

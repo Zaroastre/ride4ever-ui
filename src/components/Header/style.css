@@ -91,3 +91,18 @@ header > div.BarLeft li > ul {
 header li:hover {
     background: rgba(200,0,0,1);
 }
+
+
+.InteractiveIcon button {
+    width: 2.5rem;
+    height: 2.5rem;
+    position: relative;
+}
+
+.InteractiveIcon button > .BadgeContainer {
+    position: absolute;
+    top: -0.3rem;
+    right: 0;
+    margin: 0;
+    
+}

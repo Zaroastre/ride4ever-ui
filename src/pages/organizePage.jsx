@@ -59,9 +59,10 @@ function OrganizePage({
   };
 
   const accept = () => {
-    roadtrip.startAddress = startAddress;
-    roadtrip.stopAddress = stopAddress;
+    // roadtrip.startAddress = startAddress;
+    // roadtrip.stopAddress = stopAddress;
     roadtrip.status = 'SOON';
+    // roadtrip.bikers.push(roadtrip.organizer);
     const SERVICE = new RoadtripService();
     SERVICE.create(roadtrip).then(() => {
       setToastInStore({
@@ -72,7 +73,12 @@ function OrganizePage({
       resetToastInStore();
       history.push('/dashboard');
     }).catch((expcetion) => {
-      console.error(expcetion);
+      setToastInStore({
+        severity: 'error',
+        summary: 'Road Trip Creation Failure',
+        detail: expcetion.error,
+      });
+      resetToastInStore();
     });
   };
 

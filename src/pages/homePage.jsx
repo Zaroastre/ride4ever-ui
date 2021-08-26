@@ -14,7 +14,7 @@ function HomePage() {
             subTitle="Search and join a existing road trip arround your location."
           >
             <Link to="/join">
-              <Button label="Join a Road Trip" className="p-button-primary" />
+              <Button label="Join a Road Trip" className="p-button-primary" icon="pi pi-arrow-right" iconPos="right" />
             </Link>
           </Card>
         </span>
@@ -24,7 +24,7 @@ function HomePage() {
             subTitle="Create your ideal road trip."
           >
             <Link to="/organize">
-              <Button label="Create the Road Trip" className="p-button-danger" />
+              <Button label="Create the Road Trip" className="p-button-danger" icon="pi pi-arrow-right" iconPos="right" />
             </Link>
           </Card>
         </span>

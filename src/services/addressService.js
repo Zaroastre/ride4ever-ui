@@ -1,9 +1,9 @@
 import axios from 'axios';
-import Motorbike from '../entities/motorbike';
+import Address from '../entities/address';
 
-export default class MotorbikeService {
+export default class AddressService {
   constructor() {
-    this.url = String(process.env.REACT_APP_API_URL).concat('/motorbikes');
+    this.url = String(process.env.REACT_APP_API_URL).concat('/addresses');
     this.headers = {
       // Authorization: AbstractCrudService.getDefaultJwt(),
       'Content-Type': 'application/json',
@@ -12,10 +12,10 @@ export default class MotorbikeService {
 
   create(entity) {
     return new Promise((resolve, reject) => {
-      if (entity instanceof Motorbike) {
+      if (entity instanceof Address) {
         axios.post(String(this.url), entity, { headers: this.headers })
           .then((response) => {
-            resolve(Motorbike.parse(response.data));
+            resolve(Address.parse(response.data));
           })
           .catch((exception) => {
             if (exception.response === undefined) {
@@ -32,10 +32,10 @@ export default class MotorbikeService {
 
   update(identifier, entity) {
     return new Promise((resolve, reject) => {
-      if (entity instanceof Motorbike) {
+      if (entity instanceof Address) {
         axios.put(String(this.url).concat('/').concat(identifier), entity, { headers: this.headers })
           .then((response) => {
-            resolve(Motorbike.parse(response.data));
+            resolve(Address.parse(response.data));
           })
           .catch((exception) => {
             if (exception.response === undefined) {
@@ -50,9 +50,9 @@ export default class MotorbikeService {
     });
   }
 
-  getMotorbikesTypes() {
+  getCountries() {
     return new Promise((resolve, reject) => {
-      axios.get(String(this.url).concat('/types'), { headers: this.headers })
+      axios.get(String(this.url).concat('/countries'), { headers: this.headers })
         .then((response) => {
           resolve(response.data);
         })
@@ -63,42 +63,6 @@ export default class MotorbikeService {
             reject(exception.response);
           }
         });
-    });
-  }
-
-  getBrands() {
-    return new Promise((resolve, reject) => {
-      axios.get(String(this.url).concat('/brands'), { headers: this.headers })
-        .then((response) => {
-          resolve(response.data);
-        })
-        .catch((exception) => {
-          if (exception.response === undefined) {
-            reject(new Error('Server is unreachable.'));
-          } else {
-            reject(exception.response);
-          }
-        });
-    });
-  }
-
-  delete(entity) {
-    return new Promise((resolve, reject) => {
-      if (entity instanceof Motorbike) {
-        axios.delete(String(this.url).concat('/').concat(entity.identifier), entity, { headers: this.headers })
-          .then(() => {
-            resolve();
-          })
-          .catch((exception) => {
-            if (exception.response === undefined) {
-              reject(new Error('Server is unreachable.'));
-            } else {
-              reject(exception.response);
-            }
-          });
-      } else {
-        reject(new Error('Invalid data type for parameter \'credential\'.'));
-      }
     });
   }
 }

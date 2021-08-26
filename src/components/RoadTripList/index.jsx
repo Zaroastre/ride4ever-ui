@@ -128,14 +128,13 @@ function RoadTripList({
           removableSort
           selectionMode="single"
         >
-          <Column field="title" header="Title" filterPlaceholder="Search by name" />
-          <Column field="maxBikers" header="Max Bikers" body={maxBikersTemplate} sortable />
           <Column field="startDate" header="Start Date" body={startDateTemplate} sortable />
           <Column field="endDate" header="End Date" body={stopDateTemplate} sortable />
-          <Column field="status" header="Status" body={statusTemplate} sortable />
           <Column field="startAddress.city" header="Start City" body={startCityTemplate} sortable />
           <Column field="stopAddress.city" header="Stop City" body={stopCityTemplate} sortable />
           <Column field="KilometersAverage" header="Distance" sortable />
+          <Column field="status" header="Status" body={statusTemplate} sortable />
+          <Column field="maxBikers" header="Max Bikers" body={maxBikersTemplate} sortable />
           <Column field="roadTripType" header="Type" body={roadTripTypeTemplate} sortable />
           <Column header="Details" body={detailsTemplate} />
           <Column header="Reservation" body={joinTemplate} />
