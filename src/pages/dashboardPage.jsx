@@ -3,14 +3,14 @@ import React, {
   useEffect,
 } from 'react';
 import { useSelector, connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import DashBoard from '../components/DashBoard';
 import RoadtripService from '../services/roadtripService';
 
 function DashboardPage() {
-
+  const history = useHistory();
   const biker = useSelector((state) => state.biker.entity);
-
   const [organizedRoadTrips, setOrganizedRoadTrips] = useState([]);
   const [upcomingRoadTrips, setUpcomingRoadTrips] = useState([]);
   const [pendingRoadTripsRequests, setPendingRoadTripsRequests] = useState([]);
@@ -19,7 +19,7 @@ function DashboardPage() {
   useEffect(() => {
     if (biker) {
       const SERVICE = new RoadtripService();
-      SERVICE.findRoadtrips({ organize_pseudo: biker.entity.pseudo })
+      SERVICE.findRoadtrips({ organizer_pseudo: biker.entity.pseudo })
       .then((roadTrips) => {
         setOrganizedRoadTrips(roadTrips);
       }).catch((exception) => {
@@ -43,7 +43,8 @@ function DashboardPage() {
       }).catch((exception) => {
         
       });
-
+    } else {
+      history.push('/login');
     }
 
   }, [setOrganizedRoadTrips, setUpcomingRoadTrips, setPendingRoadTripsRequests, setOldRoadTrips, biker]);

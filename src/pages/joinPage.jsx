@@ -18,7 +18,7 @@ function JoinPage() {
     }).catch((exception) => {
       console.log(exception);
     });
-  });
+  }, [setRoadTrips]);
 
   const onSearchHandle = (searchQuery) => {
     setRoadTrips([]);
@@ -28,8 +28,8 @@ function JoinPage() {
 
   return (
     <section className="Page Page-JoinPage">
-      <h1>Search and Join a road trip</h1>
-      <DefaultSearchForm setSearch={setSearch} onSearch={onSearchHandle} />
+      {/* <h1>Search and Join a road trip</h1> */}
+      {/* <DefaultSearchForm setSearch={setSearch} onSearch={onSearchHandle} /> */}
       <RoadTripList roadtrips={roadtrips} />
     </section>
   );

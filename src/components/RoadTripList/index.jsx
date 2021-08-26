@@ -12,6 +12,7 @@ import { Button } from 'primereact/button';
 import { InputSwitch } from 'primereact/inputswitch';
 
 import './style.css';
+import { Link } from 'react-router-dom';
 
 function RoadTripList({
   roadtrips,
@@ -26,10 +27,16 @@ function RoadTripList({
     return (null);
   };
 
+  const formatDate = (date) => {
+    return date.toLocaleString().toString().substring(0, 17);
+  }
+
   const detailsTemplate = (roadtrip) => {
     if (roadtrip) {
       return (
-        <Button icon="pi pi-eye" className="p-button-secondary" />
+        <Link to={String('/roadtrips/').concat(roadtrip.identifier)}>
+          <Button icon="pi pi-eye" className="p-button-secondary" />
+        </Link>
       );
     }
     return (null);
@@ -59,6 +66,60 @@ function RoadTripList({
     return (null);
   };
 
+  const maxBikersTemplate = (roadtrip) => {
+    if (roadtrip) {
+      let classNameCandidates = '';
+      let classNameBikers = '';
+      if (roadtrip.candidates.length * 100 / roadtrip.maxBikers < 80) {
+        classNameCandidates = 'alert-level-ras';
+      } else if (roadtrip.candidates.length * 100 / roadtrip.maxBikers < 100) {
+        classNameCandidates = 'alert-level-limit';
+      } else {
+        classNameCandidates = 'alert-level-full';
+      }
+
+      if (roadtrip.bikers.length * 100 / roadtrip.maxBikers < 80) {
+        classNameBikers = 'alert-level-ras';
+      } else if (roadtrip.bikers.length * 100 / roadtrip.maxBikers < 100) {
+        classNameBikers = 'alert-level-limit';
+      } else {
+        classNameBikers = 'alert-level-full';
+      }
+
+      return (
+        <>
+          <p className={classNameCandidates}>
+            {String('Candidates: ').concat(roadtrip.candidates.length).concat('/').concat(roadtrip.maxBikers)}
+          </p>
+          <p className={classNameBikers}>
+            {String('Bikers: ').concat(roadtrip.bikers.length).concat('/').concat(roadtrip.maxBikers)}
+          </p>
+        </>
+      )
+    }
+    return (null);
+  }
+
+  const startDateTemplate = (roadtrip) => {
+    return formatDate(roadtrip.startDate);
+  }
+
+  const stopDateTemplate = (roadtrip) => {
+    return formatDate(roadtrip.endDate);
+  }
+  
+  const startCityTemplate = (roadtrip) => {
+    return String(roadtrip.startAddress.city).concat(' (').concat(roadtrip.startAddress.zipCode).concat(')');
+  }
+
+  const stopCityTemplate = (roadtrip) => {
+    return String(roadtrip.stopAddress.city).concat(' (').concat(roadtrip.stopAddress.zipCode).concat(')');
+  }
+
+  const statusTemplate = (roadtrip) => (
+    <Tag className={String('Tag-').concat(roadtrip.status)} value={roadtrip.status} />
+  );
+
   return (
     <div className="Component Component-RoadTripList">
       <div className="card">
@@ -72,13 +133,13 @@ function RoadTripList({
           selectionMode="single"
         >
           <Column field="title" header="Title" filterPlaceholder="Search by name" />
-          <Column field="maxBikers" header="Max Bikers" sortable />
-          <Column field="startDate" header="Start Date" sortable />
-          <Column field="endDate" header="End Date" sortable />
-          <Column field="status" header="Status" sortable />
-          <Column field="startAddress.zipCode" header="Start Address" sortable />
-          <Column field="stopAddress.zipCode" header="Stop Address" sortable />
-          <Column field="KilometersAverage" header="Kilometers Average" sortable />
+          <Column field="maxBikers" header="Max Bikers" body={maxBikersTemplate} sortable />
+          <Column field="startDate" header="Start Date" body={startDateTemplate} sortable />
+          <Column field="endDate" header="End Date" body={stopDateTemplate} sortable />
+          <Column field="status" header="Status" body={statusTemplate} sortable />
+          <Column field="startAddress.city" header="Start City" body={startCityTemplate} sortable />
+          <Column field="stopAddress.city" header="Stop City" body={stopCityTemplate} sortable />
+          <Column field="KilometersAverage" header="Distance" sortable />
           <Column field="roadTripType" header="Type" body={roadTripTypeTemplate} sortable />
           <Column header="Details" body={detailsTemplate} />
           <Column header="Reservation" body={joinTemplate} />

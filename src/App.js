@@ -26,6 +26,7 @@ import ProfilePage from './pages/profilePage';
 import OrganizePage from './pages/organizePage';
 import JoinPage from './pages/joinPage';
 import DashboardPage from './pages/dashboardPage';
+import RoadTripPage from './pages/roadtripPage';
 import NotFoundPage from './pages/notFoundPage';
 
 import './App.css';
@@ -49,6 +50,7 @@ function App() {
           <Route exact path="/recovery" component={RecoveryPage} />
           <Route exact path="/profile" component={ProfilePage} />
           <Route exact path="/dashboard" component={DashboardPage} />
+          <Route path="/roadtrips/:roadtripIdentifier" component={RoadTripPage} />
           <Route path="/*" component={NotFoundPage} />
         </Switch>
       </main>

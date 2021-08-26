@@ -10,8 +10,8 @@ export default class RoadTrip {
     this.candidates = [];
     this.bikers = [];
     this.roadTripType = null;
-    this.startDate = null;
-    this.endDate = null;
+    this.startDate = new Date();
+    this.endDate = this.startDate;
     this.status = null;
     this.destinations = [];
     this.startAddress = new Address();
@@ -39,9 +39,9 @@ export default class RoadTrip {
         entity.candidates = json.candidates;
         entity.bikers = json.bikers;
         entity.roadTripType = json.roadTripType;
-        entity.startDate = json.startDate;
+        entity.startDate = new Date(json.startDate);
         entity.status = json.status;
-        entity.endDate = json.endDate;
+        entity.endDate = new Date(json.endDate);
         entity.startAddress = json.startAddress;
         entity.destinations = json.destinations;
         entity.stopAddress = json.stopAddress;

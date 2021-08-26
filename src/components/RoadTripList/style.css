@@ -1,0 +1,9 @@
+p.alert-level-ras {
+    color: rgba(0,150,0,1);
+}
+p.alert-level-limit {
+    color: rgba(255,150,0,1);
+}
+p.alert-level-full {
+    color: rgba(150,0,0,1);
+}
