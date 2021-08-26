@@ -53,6 +53,23 @@ export default class RoadtripService {
         });
     });
   }
+  findById(identifier) {
+    return new Promise((resolve, reject) => {
+      axios.get(String(this.url).concat('/').concat(identifier), { headers: this.headers })
+        .then((response) => {
+          const roadtrip = RoadTrip.parse(response.data);
+          resolve(roadtrip);
+        })
+        .catch((exception) => {
+          if (exception.response === undefined) {
+            reject(new Error('Server is unreachable.'));
+          } else {
+            reject(exception.response);
+          }
+        });
+    });
+  }
+
 
   getRoadtripsTypes() {
     return new Promise((resolve, reject) => {

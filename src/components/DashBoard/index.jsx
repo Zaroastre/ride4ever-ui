@@ -2,9 +2,12 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { withRouter } from 'react-router';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card } from 'primereact/card';
 import { Divider } from 'primereact/divider';
+
+import DICTIONARY from '../../locales/dictionary';
 
 import './style.css';
 import { Button } from 'primereact/button';
@@ -15,6 +18,8 @@ function DashBoard({
   pendingRoadTripsRequests,
   oldRoadTrips,
 }) {
+
+  const language = useSelector((state) => state.language.value);
 
   const footerTemplate = (list, label, path, defaultLabel, defaultPath) => {
     if (!list || list.length === 0) {
@@ -36,13 +41,19 @@ function DashBoard({
       {
         organizedRoadTrips ? (
           <Card
-            title="Your Organized Road Trips"
+            title={DICTIONARY.PAGE.DASHBOARD.ORGANIZED_ROADTRIPS.TITLE[language]}
             className="DashBoard-Item"
-            footer={footerTemplate(organizedRoadTrips, 'Manage', '/tbd', 'Organize', '/organize')}
+            footer={footerTemplate(
+              organizedRoadTrips,
+              DICTIONARY.PAGE.DASHBOARD.ORGANIZED_ROADTRIPS.BUTTON.OPTION_1[language],
+              '/tbd',
+              DICTIONARY.PAGE.DASHBOARD.ORGANIZED_ROADTRIPS.BUTTON.OPTION_2[language],
+              '/organize',
+            )}
           >
             {(organizedRoadTrips.length === 0) ? (
               <>
-                You have not organized any road trip.
+                {DICTIONARY.PAGE.DASHBOARD.ORGANIZED_ROADTRIPS.BODY[language]}
               </>
             ) : (
               <h4>{organizedRoadTrips.length}</h4>
@@ -54,13 +65,19 @@ function DashBoard({
       {
         upcomingRoadTrips ? (
           <Card
-            title="Your Upcoming Road Trips"
+          title={DICTIONARY.PAGE.DASHBOARD.UPCOMING_ROADTRIPS.TITLE[language]}
             className="DashBoard-Item"
-            footer={footerTemplate(upcomingRoadTrips, 'Manage', '/tbd', 'Search', '/join')}
+            footer={footerTemplate(
+              upcomingRoadTrips,
+              DICTIONARY.PAGE.DASHBOARD.UPCOMING_ROADTRIPS.BUTTON.OPTION_1[language],
+              '/tbd',
+              DICTIONARY.PAGE.DASHBOARD.UPCOMING_ROADTRIPS.BUTTON.OPTION_2[language],
+              '/join'
+            )}
           >
             {(upcomingRoadTrips.length === 0) ? (
               <>
-                You are not yet registered for any road trip.
+              {DICTIONARY.PAGE.DASHBOARD.UPCOMING_ROADTRIPS.BODY[language]}
               </>
             ) : (
               <h4>{upcomingRoadTrips.length}</h4>
@@ -71,13 +88,19 @@ function DashBoard({
       {
         pendingRoadTripsRequests ? (
           <Card
-            title="Your Pending Requests (Road Trips)"
+          title={DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.TITLE[language]}
             className="DashBoard-Item"
-            footer={footerTemplate(pendingRoadTripsRequests, 'Manage', '/tbd', 'Manage', '/join')}
+            footer={footerTemplate(
+              pendingRoadTripsRequests,
+              DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.BUTTON.OPTION_1[language],
+              '/tbd',
+              DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.BUTTON.OPTION_2[language],
+              '/join'
+            )}
           >
             {(pendingRoadTripsRequests.length === 0) ? (
               <>
-                You have not requests for any road trips.
+              {DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.BODY[language]}
               </>
             ) : (
               <h4>{pendingRoadTripsRequests.length}</h4>
@@ -89,13 +112,19 @@ function DashBoard({
       {
         oldRoadTrips ? (
           <Card
-            title="Your Old Road Trips"
+          title={DICTIONARY.PAGE.DASHBOARD.OLD_ROADTRIPS.TITLE[language]}
             className="DashBoard-Item"
-            footer={footerTemplate(oldRoadTrips, 'View', '/join', 'View', '/join')}
+            footer={footerTemplate(
+              oldRoadTrips,
+              DICTIONARY.PAGE.DASHBOARD.OLD_ROADTRIPS.BUTTON.OPTION_1[language],
+              '/join',
+              DICTIONARY.PAGE.DASHBOARD.OLD_ROADTRIPS.BUTTON.OPTION_2[language],
+              '/join'
+            )}
           >
             {(oldRoadTrips.length === 0) ? (
               <>
-                You have not yet accomplished any road trip.
+              {DICTIONARY.PAGE.DASHBOARD.OLD_ROADTRIPS.BODY[language]}
               </>
             ) : (
               <h4>{oldRoadTrips.length}</h4>

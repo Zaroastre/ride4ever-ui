@@ -12,91 +12,82 @@ header {
     z-index: 10000;
 }
 
-header nav {
-    position: relative;
-    color: rgba(255,255,255,1);
-    text-align: center;
-    cursor: pointer;
+header > div.Bar {
     background: rgba(0,0,0,1);
-    display: flex;
-    margin: 0;
-    padding: 0;
 }
 
-header nav > span {
-    display: block;
-    padding: 25px 0;
-    font-size: bolder;
-}
-
-header  nav > i {
-    display: block;
-    padding-left: 20px;
-}
-
-header nav ul {
-    margin: 0;
-    padding: 0;
-}
-
-header nav > ul {
-    display: flex;
-    justify-content: space-between;
-    vertical-align: middle;
-    margin: 0;
-    padding: 0;
-}
-header li {
+header > div.BarTop {
     position: relative;
-    display: block;
-    list-style: none;
-    width: 10rem;
-    background: rgba(0,0,0,1);
-    margin: 0;
-    padding: 0;
-    border-bottom: solid 5px rgba(255,0,0,0);
-}
-
-header nav > ul > li > ul {
-    position: absolute;
-    display: none;
-    background: black;
     width: 100%;
+    display: flex;
+    z-index: 95000;
+    justify-content: space-between;
 }
-
-header nav > ul > li:hover > ul {
+header > div.BarTop > .LogoContainer > a {
     display: block;
+    text-align: center;
+    background: rgba(0,0,0,1);
+    width: 6rem;
+    padding: 0.5rem 1rem;
 }
 
-header a > img.AppLogo {
-    position: relative;
-    width: 4rem;
+header > div.BarTop > .LogoContainer img.AppLogo {
+    width: 3rem;
 }
 
-header nav ul li:hover {
-    text-decoration: none;
-    font-weight: bold;
-    border-bottom: solid 5px rgba(255,0,0,1);
+header > div.BarTop > .SecondaryMenu {
+    display: flex;
 }
 
-header nav > ul>  li:hover {
-    background: rgba(50,50,50,1);
+header > div.BarLeft {
+    position: fixed;
+    z-index: 9000;
+    left: 0;
+    height: 100vh;
+    padding-top: 4rem;
+    background: rgba(30,30,30,1);
 }
 
-header nav ul li a {
+header > div.BarLeft:hover .MenuItemText {
+    display: inline-block;
+}
+
+header nav,
+header ul,
+header li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+li > a {
     display: block;
-    text-decoration: none;
-    font-style: normal;
-    font-weight: bold;
-    color: rgba(200,200,200,1);
-    padding: 1rem;
+    padding: 0.75rem 0.5rem;
+    color: rgba(255,255,255,1);
 }
 
-header nav ul li:hover {
-
+li:hover > a {
+    color: rgba(255,255,255,1);
 }
 
-header nav ul li:hover a {
-    color: rgba(255,100,100,1);
-    text-decoration: none;
+.InteractiveIcon {
+    margin: 0.5rem;
+}
+.MenuItemIcon {
+    text-align: center;
+    display: inline-block;
+    width: 5rem;
+}
+
+.MenuItemText {
+    display: none;
+    padding-right: 2rem;
+}
+
+header > div.BarLeft li > ul {
+    display: none;
+}
+
+header li:hover {
+    background: rgba(200,0,0,1);
 }

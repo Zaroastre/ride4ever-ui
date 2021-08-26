@@ -1,73 +1,80 @@
 import React from 'react';
 import { withRouter } from 'react-router';
-import { useSelector } from 'react-redux';
+import { useSelector, connect } from 'react-redux';
 import { Button } from 'primereact/button';
 import { Link } from 'react-router-dom';
 import { Divider } from 'primereact/divider';
+import { Tooltip } from 'primereact/tooltip';
+import { setLanguage } from '../../store/language/languageAction';
+
+import DICTIONARY from '../../locales/dictionary';
 
 import './style.css';
 
-function Header() {
+function Header({
+  setlanguageInStore,
+}) {
   const biker = useSelector((state) => state.biker.entity);
-  // const [activeIndex, setActiveIndex] = useState(3);
+  const language = useSelector((state) => state.language.value);
 
   return (
     <header className="Component Component-Header">
-      <span>
-        <a href="./">
-          <img className="AppLogo" src="/assets/images/icons/NIRAHTECH_ICON.svg" alt="icon" />
-        </a>
-      </span>
-      <span>
+      <div className="Bar BarTop">
+        <span className="LogoContainer">
+          <a href="./">
+            <img className="AppLogo" src="/assets/images/icons/NIRAHTECH_ICON.svg" alt="icon" />
+          </a>
+        </span>
+        <span className="SecondaryMenu">
+          <span className="InteractiveIcon">
+            <Button icon="pi pi-bell" tooltip="Notifications" tooltipOptions={{ position: 'bottom' }} />
+          </span>
+          <span className="InteractiveIcon">
+            <Button icon="pi pi-envelope" tooltip="Messages" tooltipOptions={{ position: 'bottom' }} />
+          </span>
+          <span className="InteractiveIcon">
+            <Link to="/profile">
+            <Button icon="pi pi-user" tooltip="Account" tooltipOptions={{ position: 'bottom' }} />
+            </Link>
+          </span>
+        </span>
+      </div>
+      <div className="Bar BarLeft">
         <nav>
           <ul>
             {
               biker ? (
-                <li><Link to="/dashboard">Dashboard</Link></li>
+                <li>
+                  <Link to="/dashboard">
+                    <span className="MenuItemIcon">
+                      <i className="pi pi-home" style={{ 'fontSize': '1.5rem' }} />
+                    </span>
+                    <span className="MenuItemText">
+                      {DICTIONARY.MENU.DASHBOARD[language]}
+                    </span>
+                  </Link>
+                </li>
               ) : (null)
             }
             <li>
-              <Link to="/explore">Road Trip</Link>
-              <ul>
-                <li><Link to="/join">Search</Link></li>
-                <li><Link to="/organize">Organize</Link></li>
-              </ul>
-            </li>
-            <li>
-              <a href="#">
-                Account
-              </a>
-              <ul>
-                {
-                  biker ? (
-                    <>
-                      <li><Link to="/profile">Account settings</Link></li>
-                      <Divider />
-                      <li>
-                        <Link to="/logout">
-                          <Button label="Logout" />
-                        </Link>
-                      </li>
-                    </>
-                  ) : (
-                    <>
-                      <li>
-                        <Link to="/login">
-                          <Button label="Login" />
-                        </Link>
-                      </li>
-                      <Divider />
-                      <li><Link to="/register">Create an account</Link></li>
-                    </>
-                  )
-                }
-              </ul>
+              <Link to="/explore">
+                <span className="MenuItemIcon">
+                  <i className="pi pi-calendar" style={{ 'fontSize': '1.5rem' }} />
+                </span>
+                <span className="MenuItemText">
+                  {DICTIONARY.MENU.ROADTRIP[language]}
+                </span>
+              </Link>
             </li>
           </ul>
         </nav>
-      </span>
+      </div>
     </header>
   );
 }
 
-export default withRouter(Header);
+const mapDispatchToProps = (dispatch) => ({
+  setlanguageInStore: (data) => dispatch(setLanguage(data)),
+});
+
+export default withRouter(connect(null, mapDispatchToProps)(Header));

@@ -34,10 +34,6 @@ function OrganizePage({
   useEffect(() => {
     const SERVICE = new RoadtripService();
     SERVICE.getRoadtripsTypes().then((enumeration) => {
-      // const LIST = [];
-      // for (let index = 0; index < enumeration.length; index += 1) {
-      //   LIST.push({ name: enumeration[index] });
-      // }
       setRoadtripsTypes(enumeration);
     });
   }, []);
@@ -65,7 +61,7 @@ function OrganizePage({
   const accept = () => {
     roadtrip.startAddress = startAddress;
     roadtrip.stopAddress = stopAddress;
-    roadtrip.status='COMING_SOON';
+    roadtrip.status='SOON';
     const SERVICE = new RoadtripService();
     SERVICE.create(roadtrip).then(() => {
       setToastInStore({
@@ -91,11 +87,10 @@ function OrganizePage({
   };
 
   const updateRoadtrip = (property, value) => {
-    console.log(property, value);
     if (Object.keys(roadtrip).includes(property)) {
-      const updatedRoadtrip = roadtrip;
+      const updatedRoadtrip = {...roadtrip};
       updatedRoadtrip[property] = value;
-      setRoadTrip(updatedRoadtrip);
+      setRoadTrip(RoadTrip.parse(updatedRoadtrip));
     } else {
       console.log(String('Property not found: ').concat(property));
     }
@@ -189,7 +184,7 @@ function OrganizePage({
               <span className="p-float-label p-input-icon-right">
                 <Dropdown
                   id="roadTripType"
-                  value={roadtrip.roadtripType}
+                  value={roadtrip.roadTripType}
                   options={roadtripsTypes}
                   onChange={(e) => updateRoadtrip('roadTripType', e.target.value)}
                   required

@@ -179,7 +179,7 @@ function RegisterForm({
                       minLength={2}
                       aria-describedby="username-field-help"
                     />
-                    <label htmlFor="pseudo">Peuso*</label>
+                    <label htmlFor="pseudo">Pseudo*</label>
                   </span>
                 </div>
               </div>
