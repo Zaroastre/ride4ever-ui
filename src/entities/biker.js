@@ -12,7 +12,7 @@ export default class Biker {
     this.driverLicenceDate = null;
     this.gender = null;
     this.email = null;
-    this.address = new Address();
+    this.address = 0;
     this.phoneNumber = null;
     this.password = null;
     this.biography = null;
@@ -56,7 +56,7 @@ export default class Biker {
         entity.biography = json.biography;
         entity.picture = json.picture;
         entity.work = json.work;
-        entity.address = Address.parse(json.address);
+        entity.address = json.address;
         entity.level = json.level;
         entity.blood = json.blood;
         entity.weight = json.weight;

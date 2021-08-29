@@ -46,9 +46,7 @@ function LoginForm({
     SERVICE.login(CREDENTIAL).then((session) => {
       setCookie('jwt', session.jwt);
       setCookie('sessionid', session.id);
-      setBikerInStore({
-        entity: session.biker,
-      });
+      setBikerInStore(session.biker);
       setToastInStore({
         severity: 'success',
         summary: 'Access granted',
@@ -61,7 +59,7 @@ function LoginForm({
       setToastInStore({
         severity: 'error',
         summary: 'Access denied',
-        detail: exception.error,
+        detail: exception,
       });
       resetToastInStore();
     }).finally(() => {

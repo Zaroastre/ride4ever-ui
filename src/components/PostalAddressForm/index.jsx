@@ -12,22 +12,20 @@ import { Button } from 'primereact/button';
 import Address from '../../entities/address';
 
 import { setToast, resetToast } from '../../store/toast/toastAction';
-import { setBiker } from '../../store/biker/bikerAction';
 
 import AddressService from '../../services/addressService';
-import BikerService from '../../services/bikerService';
 
 import './style.css';
 
 function PostalAddressForm({
-  biker,
   address,
+  onSubmit,
   setToastInStore,
   resetToastInStore,
-  setBikerInStore,
 }) {
   const [postalAddress, setPostalAddress] = useState(new Address());
   const [countries, setCountries] = useState([]);
+
   useEffect(() => {
     if (!address) {
       setPostalAddress(new Address());
@@ -41,63 +39,15 @@ function PostalAddressForm({
     SERVICE.getCountries().then((array) => {
       setCountries(array);
     }).catch((exception) => {
+      setToastInStore({
+        severity: 'error',
+        summary: 'Data Provisioning Failure',
+        detail: 'Unable to retieve list of countries.',
+      });
+      resetToastInStore();
       console.error(exception);
     });
   }, [setCountries]);
-
-  const updateBikerAddress = () => {
-    const SERVICE = new BikerService();
-    if (biker && postalAddress) {
-      biker.address = postalAddress;
-      SERVICE.update(biker.identifier, biker).then((updatedBiker) => {
-        setBikerInStore({
-          entity: updatedBiker,
-        });
-        setToastInStore({
-          severity: 'success',
-          summary: 'Biker Address Updated',
-          detail: 'You are now connected.',
-        });
-        resetToastInStore();
-      }).catch((exception) => {
-        setToastInStore({
-          severity: 'error',
-          summary: 'Biker Address Update Failure',
-          detail: exception.error,
-        });
-        resetToastInStore();
-      });
-    }
-  };
-
-  const updateAddressHandle = () => {
-    const SERVICE = new AddressService();
-    if (postalAddress.identifier <= 0) {
-      SERVICE.create(postalAddress).then((updatedAddress) => {
-        setPostalAddress(updatedAddress);
-        updateBikerAddress();
-      }).catch((exception) => {
-        setToastInStore({
-          severity: 'error',
-          summary: 'Address Creation Failure',
-          detail: exception.error,
-        });
-        resetToastInStore();
-      });
-    } else {
-      SERVICE.update(postalAddress.identifier, postalAddress).then((updatedAddress) => {
-        setPostalAddress(updatedAddress);
-        updateBikerAddress();
-      }).catch((exception) => {
-        setToastInStore({
-          severity: 'error',
-          summary: 'Address Update Failure',
-          detail: exception.error,
-        });
-        resetToastInStore();
-      });
-    }
-  };
 
   const selectedCountryTemplate = (option, props) => {
     if (option) {
@@ -250,13 +200,12 @@ function PostalAddressForm({
           </div>
         </form>
       </div>
-      <Button label="Update" onClick={updateAddressHandle} />
+      <Button label="Update" onClick={() => onSubmit(postalAddress)} />
     </section>
   );
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  setBikerInStore: (data) => dispatch(setBiker(data)),
   setToastInStore: (data) => dispatch(setToast(data)),
   resetToastInStore: () => dispatch(resetToast()),
 });

@@ -8,6 +8,7 @@ import { useHistory } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import DashBoard from '../components/DashBoard';
 import RoadtripService from '../services/roadtripService';
+import ReservationService from '../services/reservationService';
 import { setToast, resetToast } from '../store/toast/toastAction';
 
 function DashboardPage({
@@ -15,7 +16,7 @@ function DashboardPage({
   resetToastInStore,
 }) {
   const history = useHistory();
-  const biker = useSelector((state) => state.biker.entity);
+  const biker = useSelector((state) => state.biker.people);
   const [organizedRoadTrips, setOrganizedRoadTrips] = useState([]);
   const [upcomingRoadTrips, setUpcomingRoadTrips] = useState([]);
   const [pendingRoadTripsRequests, setPendingRoadTripsRequests] = useState([]);
@@ -23,48 +24,50 @@ function DashboardPage({
 
   useEffect(() => {
     if (biker) {
-      const SERVICE = new RoadtripService();
-      SERVICE.findRoadtrips({ organizer_pseudo: biker.entity.pseudo })
+      const ROADTRIP_SERVICE = new RoadtripService();
+      const RESERVATION_SERVICE = new ReservationService();
+
+      ROADTRIP_SERVICE.findRoadtrips({ organizer_pseudo: biker.pseudo })
         .then((roadTrips) => {
           setOrganizedRoadTrips(roadTrips);
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
             summary: 'Provisioning Failure',
-            detail: exception.error,
+            detail: exception,
           });
           resetToastInStore();
         });
-      SERVICE.findRoadtrips({ biker_pseudo: biker.entity.pseudo, status: 'SOON' })
+        ROADTRIP_SERVICE.findRoadtrips({ biker_pseudo: biker.pseudo, status: 'SOON' })
         .then((roadTrips) => {
           setUpcomingRoadTrips(roadTrips);
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
             summary: 'Provisioning Failure',
-            detail: exception.error,
+            detail: exception,
           });
           resetToastInStore();
         });
-      SERVICE.findRoadtrips({ candidate_pseudo: biker.entity.pseudo })
-        .then((roadTrips) => {
-          setPendingRoadTripsRequests(roadTrips);
+        RESERVATION_SERVICE.findReservations({ biker_pseudo: biker.pseudo, status: 'PENDING' })
+        .then((reservations) => {
+          setPendingRoadTripsRequests(reservations);
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
             summary: 'Provisioning Failure',
-            detail: exception.error,
+            detail: exception,
           });
           resetToastInStore();
         });
-      SERVICE.findRoadtrips({ biker_pseudo: biker.entity.pseudo, status: 'TERMINATED' })
+        ROADTRIP_SERVICE.findRoadtrips({ biker_pseudo: biker.pseudo, status: 'TERMINATED' })
         .then((roadTrips) => {
           setOldRoadTrips(roadTrips);
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
             summary: 'Provisioning Failure',
-            detail: exception.error,
+            detail: exception,
           });
           resetToastInStore();
         });
@@ -84,6 +87,7 @@ function DashboardPage({
 
   return (
     <section className="Page Page-Login">
+      <h1>DashBoard</h1>
       <DashBoard
         organizedRoadTrips={organizedRoadTrips}
         upcomingRoadTrips={upcomingRoadTrips}

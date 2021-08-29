@@ -21,13 +21,13 @@ export default class AddressService {
           })
           .catch((exception) => {
             if (exception.response === undefined) {
-              reject(new Error('Server is unreachable.'));
+              reject('Server is unreachable.');
             } else {
-              reject(exception.response);
+              reject(exception.response.data.error);
             }
           });
       } else {
-        reject(new Error('Invalid data type for parameter \'credential\'.'));
+        reject('Invalid data type for data \'address\'.');
       }
     });
   }
@@ -41,13 +41,13 @@ export default class AddressService {
           })
           .catch((exception) => {
             if (exception.response === undefined) {
-              reject(new Error('Server is unreachable.'));
+              reject('Server is unreachable.');
             } else {
-              reject(exception.response);
+              reject(exception.response.data.error);
             }
           });
       } else {
-        reject(new Error('Invalid data type for parameter \'credential\'.'));
+        reject('Invalid data type for data \'address\'.');
       }
     });
   }
@@ -60,9 +60,9 @@ export default class AddressService {
         })
         .catch((exception) => {
           if (exception.response === undefined) {
-            reject(new Error('Server is unreachable.'));
+            reject('Server is unreachable.');
           } else {
-            reject(exception.response);
+            reject(exception.response.data.error);
           }
         });
     });

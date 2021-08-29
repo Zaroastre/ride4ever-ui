@@ -1,10 +1,10 @@
 import axios from 'axios';
-import Motorbike from '../entities/motorbike';
+import Reservation from '../entities/reservation';
 import AbstractService from './abstractService';
 
-export default class MotorbikeService {
+export default class ReservationService {
   constructor() {
-    this.url = String(process.env.REACT_APP_API_URL).concat('/motorbikes');
+    this.url = String(process.env.REACT_APP_API_URL).concat('/reservations');
     this.headers = {
       Authorization: AbstractService.getJwt(),
       'Content-Type': 'application/json',
@@ -12,12 +12,12 @@ export default class MotorbikeService {
     };
   }
 
-  create(entity) {
+  create(reservation) {
     return new Promise((resolve, reject) => {
-      if (entity instanceof Motorbike) {
-        axios.post(String(this.url), entity, { headers: this.headers })
+      if (reservation instanceof Reservation) {
+        axios.post(this.url, reservation, { headers: this.headers })
           .then((response) => {
-            resolve(Motorbike.parse(response.data));
+            resolve(Reservation.parse(response.data));
           })
           .catch((exception) => {
             if (exception.response === undefined) {
@@ -27,36 +27,24 @@ export default class MotorbikeService {
             }
           });
       } else {
-        reject('Invalid data type for data \'motorbike\'.');
+        reject('Invalid data type for data \'reservation\'.');
       }
     });
   }
 
-  update(identifier, entity) {
+  findReservations(filters = null) {
     return new Promise((resolve, reject) => {
-      if (entity instanceof Motorbike) {
-        axios.put(String(this.url).concat('/').concat(identifier), entity, { headers: this.headers })
-          .then((response) => {
-            resolve(Motorbike.parse(response.data));
-          })
-          .catch((exception) => {
-            if (exception.response === undefined) {
-              reject('Server is unreachable.');
-            } else {
-              reject(exception.response.data.error);
-            }
-          });
-      } else {
-        reject('Invalid data type for data \'motorbike\'.');
-      }
-    });
-  }
-
-  getMotorbikesTypes() {
-    return new Promise((resolve, reject) => {
-      axios.get(String(this.url).concat('/types'), { headers: this.headers })
+      axios.get(String(this.url), { headers: this.headers, params: filters })
         .then((response) => {
-          resolve(response.data);
+          const reservations = [];
+          if (Array.isArray(response.data)) {
+            for (let index = 0; index < response.data.length; index += 1) {
+              reservations.push(Reservation.parse(response.data[index]));
+            }
+          } else {
+            reservations.push(Reservation.parse(response.data));
+          }
+          resolve(reservations);
         })
         .catch((exception) => {
           if (exception.response === undefined) {
@@ -68,11 +56,12 @@ export default class MotorbikeService {
     });
   }
 
-  getBrands() {
+  findById(identifier) {
     return new Promise((resolve, reject) => {
-      axios.get(String(this.url).concat('/brands'), { headers: this.headers })
+      axios.get(String(this.url).concat('/').concat(identifier), { headers: this.headers })
         .then((response) => {
-          resolve(response.data);
+          const reservation = Reservation.parse(response.data);
+          resolve(reservation);
         })
         .catch((exception) => {
           if (exception.response === undefined) {
@@ -84,10 +73,10 @@ export default class MotorbikeService {
     });
   }
 
-  delete(entity) {
+  delete(reservation) {
     return new Promise((resolve, reject) => {
-      if (entity instanceof Motorbike) {
-        axios.delete(String(this.url).concat('/').concat(entity.identifier), entity, { headers: this.headers })
+      if (reservation instanceof Reservation) {
+        axios.delete(String(this.url).concat('/').concat(reservation.identifier), { headers: this.headers })
           .then(() => {
             resolve();
           })
@@ -99,7 +88,7 @@ export default class MotorbikeService {
             }
           });
       } else {
-        reject('Invalid data type for data \'motorbike\'.');
+        reject('Invalid data type for data \'reservation\'.');
       }
     });
   }

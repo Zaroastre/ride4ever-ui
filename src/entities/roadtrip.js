@@ -14,8 +14,8 @@ export default class RoadTrip {
     this.endDate = this.startDate;
     this.status = null;
     this.destinations = [];
-    this.startAddress = new Address();
-    this.stopAddress = new Address();
+    this.startAddress = 0;
+    this.stopAddress = 0;
     this.kilometersAverage = 0;
   }
 

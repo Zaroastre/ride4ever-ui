@@ -3,21 +3,53 @@
 /* eslint-disable max-len */
 import React, {
   useState,
+  useEffect,
 } from 'react';
+
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
 import { InputSwitch } from 'primereact/inputswitch';
 
+import Reservation from '../../entities/reservation';
+import { setToast, resetToast } from '../../store/toast/toastAction';
+import { setReservations } from '../../store/reservation/reservationAction';
+
 import './style.css';
 import { Link } from 'react-router-dom';
+import ReservationService from '../../services/reservationService';
 
 function RoadTripList({
+  biker,
   roadtrips,
+  reservations,
+  setReservationsInStore,
+  setToastInStore,
+  resetToastInStore,
+  enableReservation=false,
 }) {
   const [myRoadTrips, setMyRoadTrips] = useState([]);
+
+  useEffect(() => {
+    for (let roadTripIndex = 0; roadTripIndex < roadtrips.length; roadTripIndex += 1) {
+      for (let reservationIndex = 0; reservationIndex < reservations.length; reservationIndex += 1) {
+        if (reservations[reservationIndex].roadTrip === roadtrips[roadTripIndex].identifier) {
+          console.log('----');
+          console.log(reservations[reservationIndex]);
+          console.log(roadtrips[roadTripIndex]);
+          console.log('====');
+          roadtrips[roadTripIndex].reservation = reservations[reservationIndex]; 
+        } else {
+          roadtrips[roadTripIndex].reservation = null;
+        }
+      }
+    }
+  }, []);
+
   const roadTripTypeTemplate = (roadtrip) => {
     if (roadtrip) {
       return (
@@ -41,24 +73,65 @@ function RoadTripList({
   };
 
   const updateMyRoadTrips = (roadtrip, isCandidate) => {
+    console.log(isCandidate);
     const myList = [...myRoadTrips];
     if (isCandidate) {
       if (!myList.includes(roadtrip)) {
         myList.push(roadtrip);
       }
+      const reservation = new Reservation();
+      reservation.biker = biker.identifier;
+      reservation.date = new Date();
+      reservation.roadTrip = roadtrip.identifier;
+      reservation.status = 'CREATED';
+
+      const RESERVATION_SERVICE = new ReservationService();
+      RESERVATION_SERVICE.create(reservation).then((r1) => {
+        console.log(r1.identifier);
+        const list = [...reservations];
+        console.log(list);
+        list.push(r1);
+        setReservations(list);
+
+      }).catch((exception) => {
+        console.log(exception);
+        setToastInStore({
+          severity: 'error',
+          summary: 'Reservation Failure',
+          detail: exception,
+        });
+        resetToastInStore();
+      });
+
     } else {
       const index = myRoadTrips.findIndex((trip) => trip.identifier === roadtrip.identifier);
       if (index >= 0) {
         myList.splice(index, 1);
+      }
+      console.log(roadtrip.reservation);
+      if (roadtrip.reservation) {
+        const RESERVATION_SERVICE = new ReservationService();
+        RESERVATION_SERVICE.delete(roadtrip.reservation).then((r1) => {
+          console.log(r1);
+        }).catch((exception) => {
+          console.log(exception);
+          setToastInStore({
+            severity: 'error',
+            summary: 'Reservation Failure',
+            detail: exception,
+          });
+          resetToastInStore();
+        });
       }
     }
     setMyRoadTrips(myList);
   };
 
   const joinTemplate = (roadtrip) => {
+    console.log(roadtrip);
     if (roadtrip) {
       return (
-        <InputSwitch checked={myRoadTrips.includes(roadtrip)} onChange={(e) => updateMyRoadTrips(roadtrip, e.value)} />
+        <InputSwitch checked={roadtrip.reservation} onChange={(e) => updateMyRoadTrips(roadtrip, e.value)} />
       );
     }
     return (null);
@@ -137,12 +210,25 @@ function RoadTripList({
           <Column field="maxBikers" header="Max Bikers" body={maxBikersTemplate} sortable />
           <Column field="roadTripType" header="Type" body={roadTripTypeTemplate} sortable />
           <Column header="Details" body={detailsTemplate} />
-          <Column header="Reservation" body={joinTemplate} />
+          {(enableReservation) ? (
+            <Column header="Reservation" body={joinTemplate} />
+          ) : (null)
+          }
+
         </DataTable>
-        <Button label="Confirm reservations" icon="pi pi-lock" className="p-button-primary" />
+        {(enableReservation) ? (
+          <Button label="Confirm reservations" icon="pi pi-lock" className="p-button-primary" />
+        ) : (null)
+        }
       </div>
     </div>
   );
 }
 
-export default withRouter(RoadTripList);
+const mapDispatchToProps = (dispatch) => ({
+  setToastInStore: (data) => dispatch(setToast(data)),
+  resetToastInStore: () => dispatch(resetToast()),
+  setReservationsInStore: (list) => dispatch(setReservations(list)),
+});
+
+export default withRouter(connect(null, mapDispatchToProps)(RoadTripList));

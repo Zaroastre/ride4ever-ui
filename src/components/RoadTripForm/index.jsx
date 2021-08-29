@@ -12,6 +12,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
 import { confirmDialog } from 'primereact/confirmdialog';
+import { Dialog } from 'primereact/dialog';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Calendar } from 'primereact/calendar';
 
@@ -19,33 +20,82 @@ import { setToast, resetToast } from '../../store/toast/toastAction';
 import RoadtripService from '../../services/roadtripService';
 import RoadTrip from '../../entities/roadtrip';
 import Address from '../../entities/address';
+import LocationService from '../../services/locationService';
+import PostalAddressForm from '../PostalAddressForm';
+import AddressService from '../../services/addressService';
 
 function RoadTripForm({
   setToastInStore,
   resetToastInStore,
 }) {
   const history = useHistory();
-  const biker = useSelector((state) => state.biker.entity);
+  const biker = useSelector((state) => state.biker.people);
   const [roadtrip, setRoadTrip] = useState(new RoadTrip());
   const [startAddress, setStartAddress] = useState(new Address());
   const [stopAddress, setStopAddress] = useState(new Address());
   const [roadtripsTypes, setRoadtripsTypes] = useState([]);
+  const [isAddressFormVisible, setIsAddressFormVisible] = useState(false);
+  const [addressInForm, setAddressInForm] = useState(new Address());
+  const [addressType, setAddressType] = useState(null);
 
   useEffect(() => {
     const SERVICE = new RoadtripService();
     SERVICE.getRoadtripsTypes().then((enumeration) => {
       setRoadtripsTypes(enumeration);
+    }).catch((exception) => {
+      setToastInStore({
+        severity: 'error',
+        summary: 'Provisioning Failure',
+        detail: exception,
+      });
+      resetToastInStore();
     });
   }, []);
 
   useEffect(() => {
-    if (biker && biker.entity) {
+  }, []);
+  
+  const showPostalAddressPanel = (order, address) => {
+    setAddressType(order);
+    if (!address || (address.city === null || address.country == null)) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const SERVICE = new LocationService();
+        SERVICE.lookupCoordinates(latitude, longitude).then((data) => {
+          address.number = data.results[0].components.house_number;
+          address.street = data.results[0].components.street;
+          address.zipCode = data.results[0].components.postcode;
+          address.city = data.results[0].components.city.toUpperCase();
+          address.state = data.results[0].components.state.toUpperCase();
+          address.country = data.results[0].components.country.toUpperCase();
+        }).catch((exception) => {
+          console.log(exception);
+          setToastInStore({
+            severity: 'error',
+            summary: 'Coordinates Lookup Failure',
+            detail: exception,
+          });
+          resetToastInStore();
+        }).finally(() => {
+          setAddressInForm(address);
+          setIsAddressFormVisible(true);
+        });
+      });
+    } else {
+      setAddressInForm(address);
+      setIsAddressFormVisible(true);
+    }
+  }
+
+  useEffect(() => {
+    if (biker && biker) {
       const trip = new RoadTrip();
-      trip.organizer = biker.entity;
-      if (trip.organizer.address) {
-        trip.startAddress = trip.organizer.address;
-        setStartAddress(trip.organizer.address);
-        setStopAddress(trip.organizer.address);
+      // trip.organizer = biker;
+      if (biker.address) {
+        // trip.startAddress = biker.address;
+        setStartAddress(biker.address);
+        setStopAddress(biker.address);
       } else {
         setStartAddress(new Address());
         setStopAddress(new Address());
@@ -64,19 +114,59 @@ function RoadTripForm({
     roadtrip.status = 'SOON';
     // roadtrip.bikers.push(roadtrip.organizer);
     const SERVICE = new RoadtripService();
-    SERVICE.create(roadtrip).then(() => {
-      setToastInStore({
-        severity: 'success',
-        summary: 'Road Trip created',
-        detail: 'Your road trip is successfully created. Ride safe!',
+    SERVICE.create(roadtrip).then((rt1) => {
+      rt1.organizer = biker.identifier;
+      SERVICE.update(rt1.identifier, rt1).then((rt2) => {
+        const ADDRESS_SERVICE = new AddressService();
+        ADDRESS_SERVICE.create(startAddress).then((updatedStartAddress) => {
+          ADDRESS_SERVICE.create(stopAddress).then((updatedStopAddress) => {
+            rt2.startAddress = updatedStartAddress.identifier;
+            rt2.stopAddress = updatedStopAddress.identifier;
+            SERVICE.update(rt2.identifier, rt2).then(() => {
+              setToastInStore({
+                severity: 'success',
+                summary: 'Road Trip created',
+                detail: 'Your road trip is successfully created. Ride safe!',
+              });
+              resetToastInStore();
+              history.push('/dashboard');
+            }).catch((exception) => {
+              setToastInStore({
+                severity: 'error',
+                summary: 'Road Trip Update Failure',
+                detail: exception,
+              });
+              resetToastInStore();
+            });
+          }).catch((exception) => {
+            setToastInStore({
+              severity: 'error',
+              summary: 'Stop Address Creation Failure',
+              detail: exception,
+            });
+            resetToastInStore();
+          });
+        }).catch((exception) => {
+          setToastInStore({
+            severity: 'error',
+            summary: 'Start Address Creation Failure',
+            detail: exception,
+          });
+          resetToastInStore();
+        });
+      }).catch((exception) => {
+        setToastInStore({
+          severity: 'error',
+          summary: 'Road Trip Update Failure',
+          detail: exception,
+        });
+        resetToastInStore();
       });
-      resetToastInStore();
-      history.push('/dashboard');
-    }).catch((expcetion) => {
+    }).catch((exception) => {
       setToastInStore({
         severity: 'error',
         summary: 'Road Trip Creation Failure',
-        detail: expcetion.error,
+        detail: exception,
       });
       resetToastInStore();
     });
@@ -115,6 +205,29 @@ function RoadTripForm({
     } else {
       console.log(String('Property not found: ').concat(property));
     }
+  };
+
+  const addressValueTemplate = (address) => String(address.number)
+    .concat(' ')
+    .concat(address.street)
+    .concat(', ')
+    .concat(address.zipCode)
+    .concat(' ')
+    .concat(address.city)
+    .concat(' (')
+    .concat(address.state)
+    .concat('), ')
+    .concat(address.country);
+
+  const onSubmitHandle = (newAddress) => {
+    if (addressType === 'startAddress') {
+      setStartAddress(newAddress);
+    } else if (addressType === 'stopAddress') {
+      setStopAddress(newAddress);
+    }
+    setAddressType(null);
+    setAddressInForm(new Address());
+    setIsAddressFormVisible(false);
   };
 
   return (
@@ -208,11 +321,12 @@ function RoadTripForm({
               <span className="p-float-label p-input-icon-right">
                 <InputText
                   id="startAddress"
-                  value={startAddress.zipCode}
-                  onChange={(e) => updateAddress(startAddress, true, 'zipCode', e.target.value)}
+                  value={addressValueTemplate(startAddress)}
+                  onClick={(e) => showPostalAddressPanel('startAddress', startAddress)}
+                  readOnly
                   required
                 />
-                <label htmlFor="startAddress">Start Address (Zip Code)*</label>
+                <label htmlFor="startAddress">Start Address*</label>
               </span>
             </div>
           </div>
@@ -226,11 +340,12 @@ function RoadTripForm({
               <span className="p-float-label p-input-icon-right">
                 <InputText
                   id="stopAddress"
-                  value={stopAddress.zipCode}
-                  onChange={(e) => updateAddress(stopAddress, false, 'zipCode', e.target.value)}
+                  value={addressValueTemplate(stopAddress)}
                   required
+                  onClick={(e) => showPostalAddressPanel('stopAddress', stopAddress)}
+                  readOnly
                 />
-                <label htmlFor="stopAddress">Stop Address (Zip Code)*</label>
+                <label htmlFor="stopAddress">Stop Address*</label>
               </span>
             </div>
           </div>
@@ -284,6 +399,13 @@ function RoadTripForm({
           <Button label="Create" className="p-button-primary" icon="pi pi-check" onClick={(event) => confirm(event)} />
         </dl>
       </form>
+      {
+        (isAddressFormVisible) ? (
+          <Dialog header="Set Address" visible style={{ width: '50vw' }} onHide={setIsAddressFormVisible} >
+            <PostalAddressForm address={addressInForm} onSubmit={onSubmitHandle} />
+          </Dialog>
+        ) : (null)
+      }
     </section>
   );
 }

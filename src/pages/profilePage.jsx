@@ -12,7 +12,7 @@ import ActivityService from '../services/activityService';
 
 function ProfilePage() {
   const history = useHistory();
-  const biker = useSelector((state) => state.biker.entity);
+  const biker = useSelector((state) => state.biker.people);
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
@@ -20,8 +20,8 @@ function ProfilePage() {
       history.push('/login');
     } else {
       const SERVICE = new ActivityService();
-      console.log(biker.entity);
-      SERVICE.findAll({ pseudo: biker.entity.pseudo }).then((list) => {
+      console.log(biker);
+      SERVICE.findAll({ pseudo: biker.pseudo }).then((list) => {
         setActivities(list);
       }).catch((exception) => {
         console.error(exception);
@@ -30,7 +30,7 @@ function ProfilePage() {
   }, [biker, history, setActivities]);
 
   const render = () => {
-    if (biker && biker.entity) {
+    if (biker && biker) {
       return (
         <section className="Page Page-Profile">
           <Link to="/logout">

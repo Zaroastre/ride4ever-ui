@@ -28,9 +28,9 @@ export default class ActivityService {
         })
         .catch((exception) => {
           if (exception.response === undefined) {
-            reject(new Error('Server is unreachable.'));
+            reject('Server is unreachable.');
           } else {
-            reject(exception.response);
+            reject(exception.response.data.error);
           }
         });
     });

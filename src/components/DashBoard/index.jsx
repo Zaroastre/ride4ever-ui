@@ -71,7 +71,7 @@ function DashBoard({
               DICTIONARY.PAGE.DASHBOARD.UPCOMING_ROADTRIPS.BUTTON.OPTION_1[language],
               '/tbd',
               DICTIONARY.PAGE.DASHBOARD.UPCOMING_ROADTRIPS.BUTTON.OPTION_2[language],
-              '/join',
+              '/search',
             )}
           >
             {(upcomingRoadTrips.length === 0) ? (
@@ -94,7 +94,7 @@ function DashBoard({
               DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.BUTTON.OPTION_1[language],
               '/tbd',
               DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.BUTTON.OPTION_2[language],
-              '/join',
+              '/search',
             )}
           >
             {(pendingRoadTripsRequests.length === 0) ? (
@@ -116,9 +116,9 @@ function DashBoard({
             footer={footerTemplate(
               oldRoadTrips,
               DICTIONARY.PAGE.DASHBOARD.OLD_ROADTRIPS.BUTTON.OPTION_1[language],
-              '/join',
+              '/tbd',
               DICTIONARY.PAGE.DASHBOARD.OLD_ROADTRIPS.BUTTON.OPTION_2[language],
-              '/join',
+              '/tbd',
             )}
           >
             {(oldRoadTrips.length === 0) ? (

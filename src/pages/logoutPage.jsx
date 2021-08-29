@@ -9,6 +9,7 @@ import { useSelector, connect } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import { resetBiker } from '../store/biker/bikerAction';
 import { setToast, resetToast } from '../store/toast/toastAction';
+import { setReservations } from '../store/reservation/reservationAction';
 
 import './style.css';
 import AuthenticationService from '../services/authenticationService';
@@ -18,13 +19,16 @@ function LogoutPage({
   resetBikerInStore,
   setToastInStore,
   resetToastInStore,
+  setReservationsInStore,
 }) {
   const history = useHistory();
-  const [cookies] = useCookies();
-  const biker = useSelector((state) => state.biker.entity);
+  const [cookies, setCookie] = useCookies();
+  const biker = useSelector((state) => state.biker.people);
 
   const logout = useCallback(() => {
     resetBikerInStore();
+    setCookie('jwt', null);
+    setCookie('sessionid', null);
     const SESSION = new Session();
     SESSION.jwt = cookies.jwt;
     SESSION.biker = biker;
@@ -36,7 +40,7 @@ function LogoutPage({
       setToastInStore({
         severity: 'error',
         summary: 'Disconnection Process failure',
-        detail: exception.error,
+        detail: exception,
       });
       resetToastInStore();
     }).finally(() => {
@@ -45,6 +49,9 @@ function LogoutPage({
         summary: 'Logout Success',
         detail: 'You are now log out.',
       });
+      resetToastInStore();
+      setReservationsInStore([]);
+      cookies.jwt = null;
       history.push('/login');
     });
   }, [resetBikerInStore, history, biker, cookies, resetToastInStore, setToastInStore]);
@@ -61,6 +68,7 @@ function LogoutPage({
 const mapDispatchToProps = (dispatch) => ({
   resetBikerInStore: () => dispatch(resetBiker()),
   setToastInStore: (data) => dispatch(setToast(data)),
+  setReservationsInStore: (data) => dispatch(setReservations(data)),
   resetToastInStore: () => dispatch(resetToast()),
 });
 

@@ -14,11 +14,14 @@ export default class AbstractService {
     let entity = null;
     const cookies = document.cookie.split(';');
     for (let index = 0; index < cookies.length; index += 1) {
-      const cookieName = cookies[index].split('=')[0].trim();
-      const cookieValue = cookies[index].split('=')[1].trim();
-      if (cookieName.toLowerCase() === 'jwt') {
-        entity = String('Bearer ').concat(cookieValue);
-        break;
+      const cookieData = cookies[index].split('=');
+      if (cookieData.length === 2) {
+        const cookieName = cookieData[0].trim();
+        const cookieValue = cookieData[1].trim();
+        if (cookieName.toLowerCase() === 'jwt') {
+          entity = String('Bearer ').concat(cookieValue);
+          break;
+        }
       }
     }
     return entity;
@@ -28,11 +31,14 @@ export default class AbstractService {
     let entity = null;
     const cookies = document.cookie.split(';');
     for (let index = 0; index < cookies.length; index += 1) {
-      const cookieName = cookies[index].split('=')[0].trim();
-      const cookieValue = cookies[index].split('=')[1].trim();
-      if (cookieName.toLowerCase() === 'sessionid') {
-        entity = cookieValue;
-        break;
+      const cookieData = cookies[index].split('=');
+      if (cookieData.length === 2) {
+        const cookieName = cookieData[0].trim();
+        const cookieValue = cookieData[1].trim();
+        if (cookieName.toLowerCase() === 'sessionid') {
+          entity = cookieValue;
+          break;
+        }
       }
     }
     return entity;
@@ -77,7 +83,7 @@ export default class AbstractService {
             if (json) {
               resolve(json);
             } else {
-              reject(new Error(String('Error while parsing data to JSON: ').concat(httpResponse.data)));
+              reject(String('Error while parsing data to JSON: ').concat(httpResponse.data));
             }
           })
           .catch((error) => {
@@ -113,7 +119,7 @@ export default class AbstractService {
             if (json) {
               resolve(json);
             } else {
-              reject(new Error(String('Error while parsing data to JSON: ').concat(httpResponse.data)));
+              reject(String('Error while parsing data to JSON: ').concat(httpResponse.data));
             }
           })
           .catch((error) => {

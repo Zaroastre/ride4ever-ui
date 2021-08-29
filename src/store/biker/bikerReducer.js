@@ -1,7 +1,7 @@
 import * as bikerAction from './bikerActionType';
 
 const initialState = {
-  entity: null,
+  people: null,
 };
 
 export default function bikerReducer(state = initialState, action) {
@@ -9,11 +9,11 @@ export default function bikerReducer(state = initialState, action) {
     case bikerAction.SET_BIKER:
       return {
         ...state,
-        entity: action.data,
+        people: action.data,
       };
     case bikerAction.RESET_BIKER:
       return {
-        entity: null,
+        people: null,
       };
     default:
       return state;

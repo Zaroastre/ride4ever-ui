@@ -56,9 +56,7 @@ function RegisterForm({
     CREDENTIAL.password = biker.password;
     SERVICE.login(CREDENTIAL).then((session) => {
       setCookie('jwt', session.jwt);
-      setBikerInStore({
-        entity: session.biker,
-      });
+      setBikerInStore(session.biker);
       setToastInStore({
         severity: 'success',
         summary: 'Access granted',
@@ -71,7 +69,7 @@ function RegisterForm({
       setToastInStore({
         severity: 'error',
         summary: 'Access denied',
-        detail: exception.error,
+        detail: exception,
       });
       resetToastInStore();
     }).finally(() => {
@@ -97,7 +95,7 @@ function RegisterForm({
       setToastInStore({
         severity: 'error',
         summary: 'Registration failure',
-        detail: exception.error,
+        detail: exception,
       });
       resetToastInStore();
     }).finally(() => {

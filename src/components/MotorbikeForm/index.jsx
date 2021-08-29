@@ -108,9 +108,7 @@ function MotorbikeForm({
     if (biker && motorbike) {
       biker.motorbikes.push(motorbike);
       SERVICE.update(biker.identifier, biker).then((updatedBiker) => {
-        setBikerInStore({
-          entity: updatedBiker,
-        });
+        setBikerInStore(updatedBiker);
         setToastInStore({
           severity: 'success',
           summary: 'Biker Motorcycles Updated',
@@ -122,7 +120,7 @@ function MotorbikeForm({
         setToastInStore({
           severity: 'error',
           summary: 'Biker Motorcycles Update Failure',
-          detail: exception.error,
+          detail: exception,
         });
         resetToastInStore();
       });
@@ -139,7 +137,7 @@ function MotorbikeForm({
         setToastInStore({
           severity: 'error',
           summary: 'Address Creation Failure',
-          detail: exception.error,
+          detail: exception,
         });
         resetToastInStore();
       });
@@ -151,7 +149,7 @@ function MotorbikeForm({
         setToastInStore({
           severity: 'error',
           summary: 'Address Update Failure',
-          detail: exception.error,
+          detail: exception,
         });
         resetToastInStore();
       });

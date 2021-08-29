@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+  useState,
+} from 'react';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useSelector, connect } from 'react-redux';
@@ -6,14 +8,29 @@ import { Button } from 'primereact/button';
 import { Badge } from 'primereact/badge';
 import { Divider } from 'primereact/divider';
 import { setLanguage } from '../../store/language/languageAction';
+import { setReservations } from '../../store/reservation/reservationAction';
 
 import DICTIONARY from '../../locales/dictionary';
 
 import './style.css';
+import { useEffect } from 'react';
+import ReservationService from '../../services/reservationService';
 
 function Header() {
-  const biker = useSelector((state) => state.biker.entity);
+  const biker = useSelector((state) => state.biker.people);
   const language = useSelector((state) => state.language.value);
+  const reservations = useSelector((state) => state.reservations.list);
+
+  useEffect(() => {
+    if (biker !== null) {
+      const SERVICE = new ReservationService();
+      SERVICE.findReservations({ biker_pseudo: biker.pseudo, status: 'CREATED' }).then((list) => {
+        setReservations(list);
+      }).catch((exception) => {
+        console.log(exception);
+      });
+    }
+  }, []);
 
   return (
     <header className="Component Component-Header">
@@ -47,9 +64,13 @@ function Header() {
                 <Link to="/reservation">
                   <Button tooltip="Reservations" tooltipOptions={{ position: 'bottom' }}>
                     <i className="pi pi-calendar" />
-                    <span className="BadgeContainer">
-                      <Badge value="10" severity="danger" className="p-mr-2" />
-                    </span>
+                    {
+                      (reservations.length > 0) ? (
+                        <span className="BadgeContainer">
+                          <Badge value={reservations.length} severity="danger" className="p-mr-2" />
+                        </span>
+                      ) : (null)
+                    }
                   </Button>
                 </Link>
               </span>

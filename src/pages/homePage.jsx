@@ -7,14 +7,15 @@ import { Card } from 'primereact/card';
 function HomePage() {
   return (
     <section className="Page Page-Home">
+      <h1>Road Trips</h1>
       <div className="PillsChoices">
         <span className="PillChoice">
           <Card
             title="Take the Blue Pill"
             subTitle="Search and join a existing road trip arround your location."
           >
-            <Link to="/join">
-              <Button label="Join a Road Trip" className="p-button-primary" icon="pi pi-arrow-right" iconPos="right" />
+            <Link to="/search">
+              <Button label="Search a Road Trip" className="p-button-primary" icon="pi pi-arrow-right" iconPos="right" />
             </Link>
           </Card>
         </span>

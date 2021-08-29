@@ -38,8 +38,8 @@ const DICTIONARY = {
         },
         BUTTON: {
           OPTION_1: {
-            EN: 'Organize',
-            FR: 'Organiser',
+            EN: 'Manage',
+            FR: 'Gérer',
           },
           OPTION_2: {
             EN: 'Organize',
@@ -82,8 +82,8 @@ const DICTIONARY = {
             FR: 'Gérer',
           },
           OPTION_2: {
-            EN: 'Manage',
-            FR: 'Gérer',
+            EN: 'Search',
+            FR: 'Rechercher',
           },
         },
       },

@@ -21,13 +21,13 @@ export default class RoadtripService {
           })
           .catch((exception) => {
             if (exception.response === undefined) {
-              reject(new Error('Server is unreachable.'));
+              reject('Server is unreachable.');
             } else {
-              reject(exception.response);
+              reject(exception.response.data.error);
             }
           });
       } else {
-        reject(new Error('Invalid data type for parameter \'entity\'.'));
+        reject('Invalid data type for data \'roadtrip\'.');
       }
     });
   }
@@ -48,9 +48,9 @@ export default class RoadtripService {
         })
         .catch((exception) => {
           if (exception.response === undefined) {
-            reject(new Error('Server is unreachable.'));
+            reject('Server is unreachable.');
           } else {
-            reject(exception.response);
+            reject(exception.response.data.error);
           }
         });
     });
@@ -65,9 +65,9 @@ export default class RoadtripService {
         })
         .catch((exception) => {
           if (exception.response === undefined) {
-            reject(new Error('Server is unreachable.'));
+            reject('Server is unreachable.');
           } else {
-            reject(exception.response);
+            reject(exception.response.data.error);
           }
         });
     });
@@ -81,13 +81,34 @@ export default class RoadtripService {
         })
         .catch((exception) => {
           if (exception.response === undefined) {
-            reject(new Error('Server is unreachable.'));
+            reject('Server is unreachable.');
           } else {
-            reject(exception.response);
+            reject(exception.response.data.error);
           }
         });
     });
   }
+
+  update(identifier, entity) {
+    return new Promise((resolve, reject) => {
+      if (entity instanceof RoadTrip) {
+        axios.put(String(this.url).concat('/').concat(identifier), entity, { headers: this.headers })
+          .then((response) => {
+            resolve(RoadTrip.parse(response.data));
+          })
+          .catch((exception) => {
+            if (exception.response === undefined) {
+              reject('Server is unreachable.');
+            } else {
+              reject(exception.response.data.error);
+            }
+          });
+      } else {
+        reject('Invalid data type for data \'roadtrip\'.');
+      }
+    });
+  }
+
 
   delete(entity) {
     return new Promise((resolve, reject) => {
@@ -98,13 +119,13 @@ export default class RoadtripService {
           })
           .catch((exception) => {
             if (exception.response === undefined) {
-              reject(new Error('Server is unreachable.'));
+              reject('Server is unreachable.');
             } else {
-              reject(exception.response);
+              reject(exception.response.data.error);
             }
           });
       } else {
-        reject(new Error('Invalid data type for parameter \'credential\'.'));
+        reject('Invalid data type for data \'roadtrip\'.');
       }
     });
   }
