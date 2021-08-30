@@ -7,7 +7,7 @@ import {
   Route,
 } from 'react-router-dom';
 import { /* Redirect, */ withRouter } from 'react-router';
-import { useCookies } from 'react-cookie';
+// import { useCookies } from 'react-cookie';
 import { connect, useSelector } from 'react-redux';
 
 import 'primereact/resources/themes/bootstrap4-light-blue/theme.css';
@@ -47,12 +47,10 @@ function App({
 }) {
   const toast = useRef(null);
 
-  const cookies = useCookies();
+  // const cookies = useCookies();
 
   const biker = useSelector((state) => state.biker.people);
-  const reservations = useSelector((state) => state.reservations.list);
-
-  console.log(reservations);
+  // const reservations = useSelector((state) => state.reservations.list);
 
   useEffect(() => {
     if (biker) {
@@ -68,7 +66,7 @@ function App({
         resetToastInStore();
       });
     }
-  }, [biker]);
+  }, [biker, setReservationsInStore, setToastInStore, resetToastInStore]);
 
   // const items = [
   //   { label: 'DashBoard', url: '/dashboard' },

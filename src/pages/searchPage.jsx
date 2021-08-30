@@ -34,7 +34,7 @@ function SearchPage() {
     } else {
       history.push('/login');
     }
-  }, [setRoadTrips]);
+  }, [biker, history, setRoadTrips]);
 
   /* const onSearchHandle = (searchQuery) => {
     setRoadTrips([]);

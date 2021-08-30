@@ -1,6 +1,4 @@
 import Motorbike from './motorbike';
-import Address from './address';
-
 export default class Biker {
   constructor() {
     this.identifier = 0;

@@ -1,5 +1,3 @@
-import Address from './address';
-
 export default class RoadTrip {
   constructor() {
     this.identifier = 0;

@@ -47,7 +47,7 @@ function PostalAddressForm({
       resetToastInStore();
       console.error(exception);
     });
-  }, [setCountries]);
+  }, [setCountries, resetToastInStore, setToastInStore]);
 
   const selectedCountryTemplate = (option, props) => {
     if (option) {

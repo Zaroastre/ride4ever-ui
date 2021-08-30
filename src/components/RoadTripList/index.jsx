@@ -22,6 +22,7 @@ import { setReservations } from '../../store/reservation/reservationAction';
 import './style.css';
 import { Link } from 'react-router-dom';
 import ReservationService from '../../services/reservationService';
+import RoadtripService from '../../services/roadtripService';
 
 function RoadTripList({
   biker,
@@ -33,22 +34,22 @@ function RoadTripList({
   enableReservation=false,
 }) {
   const [myRoadTrips, setMyRoadTrips] = useState([]);
+  const [updatedRoadTrips, setUpdatedRoadTrips] = useState([...roadtrips]);
 
   useEffect(() => {
-    for (let roadTripIndex = 0; roadTripIndex < roadtrips.length; roadTripIndex += 1) {
+    let data = [...roadtrips];
+    for (let roadTripIndex = 0; roadTripIndex < data.length; roadTripIndex += 1) {
       for (let reservationIndex = 0; reservationIndex < reservations.length; reservationIndex += 1) {
-        if (reservations[reservationIndex].roadTrip === roadtrips[roadTripIndex].identifier) {
-          console.log('----');
-          console.log(reservations[reservationIndex]);
-          console.log(roadtrips[roadTripIndex]);
-          console.log('====');
-          roadtrips[roadTripIndex].reservation = reservations[reservationIndex]; 
+        if (reservations[reservationIndex].roadTrip === data[roadTripIndex].identifier) {
+          data[roadTripIndex].reservation = reservations[reservationIndex]; 
         } else {
-          roadtrips[roadTripIndex].reservation = null;
+          data[roadTripIndex].reservation = null;
         }
       }
     }
-  }, []);
+    setUpdatedRoadTrips(data);
+  }, [reservations, roadtrips, setUpdatedRoadTrips]);
+
 
   const roadTripTypeTemplate = (roadtrip) => {
     if (roadtrip) {
@@ -73,12 +74,8 @@ function RoadTripList({
   };
 
   const updateMyRoadTrips = (roadtrip, isCandidate) => {
-    console.log(isCandidate);
     const myList = [...myRoadTrips];
     if (isCandidate) {
-      if (!myList.includes(roadtrip)) {
-        myList.push(roadtrip);
-      }
       const reservation = new Reservation();
       reservation.biker = biker.identifier;
       reservation.date = new Date();
@@ -87,14 +84,11 @@ function RoadTripList({
 
       const RESERVATION_SERVICE = new ReservationService();
       RESERVATION_SERVICE.create(reservation).then((r1) => {
-        console.log(r1.identifier);
         const list = [...reservations];
-        console.log(list);
         list.push(r1);
         setReservations(list);
 
       }).catch((exception) => {
-        console.log(exception);
         setToastInStore({
           severity: 'error',
           summary: 'Reservation Failure',
@@ -108,13 +102,11 @@ function RoadTripList({
       if (index >= 0) {
         myList.splice(index, 1);
       }
-      console.log(roadtrip.reservation);
       if (roadtrip.reservation) {
         const RESERVATION_SERVICE = new ReservationService();
         RESERVATION_SERVICE.delete(roadtrip.reservation).then((r1) => {
           console.log(r1);
         }).catch((exception) => {
-          console.log(exception);
           setToastInStore({
             severity: 'error',
             summary: 'Reservation Failure',
@@ -193,7 +185,7 @@ function RoadTripList({
     <div className="Component Component-RoadTripList">
       <div className="card">
         <DataTable
-          value={roadtrips}
+          value={updatedRoadTrips}
           paginator
           rows={10}
           className="p-datatable-customers"

@@ -50,7 +50,7 @@ function RoadTripForm({
       });
       resetToastInStore();
     });
-  }, []);
+  }, [setToastInStore, resetToastInStore]);
 
   useEffect(() => {
   }, []);
@@ -187,21 +187,6 @@ function RoadTripForm({
       const updatedRoadtrip = { ...roadtrip };
       updatedRoadtrip[property] = value;
       setRoadTrip(RoadTrip.parse(updatedRoadtrip));
-    } else {
-      console.log(String('Property not found: ').concat(property));
-    }
-  };
-
-  const updateAddress = (address, isStart, property, value) => {
-    console.log(property, value);
-    if (Object.keys(address).includes(property)) {
-      const updatedAddress = address;
-      updatedAddress[property] = value;
-      if (isStart) {
-        setStartAddress(updatedAddress);
-      } else {
-        setStopAddress(updatedAddress);
-      }
     } else {
       console.log(String('Property not found: ').concat(property));
     }

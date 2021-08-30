@@ -1,5 +1,5 @@
 import React, {
-  useState,
+  useEffect,
 } from 'react';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -11,10 +11,8 @@ import { setLanguage } from '../../store/language/languageAction';
 import { setReservations } from '../../store/reservation/reservationAction';
 
 import DICTIONARY from '../../locales/dictionary';
-
-import './style.css';
-import { useEffect } from 'react';
 import ReservationService from '../../services/reservationService';
+import './style.css';
 
 function Header() {
   const biker = useSelector((state) => state.biker.people);
@@ -30,7 +28,7 @@ function Header() {
         console.log(exception);
       });
     }
-  }, []);
+  }, [biker]);
 
   return (
     <header className="Component Component-Header">

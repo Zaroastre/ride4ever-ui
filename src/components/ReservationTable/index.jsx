@@ -12,9 +12,11 @@ import { setReservations } from '../../store/reservation/reservationAction';
 import './style.css';
 
 function ReservationTable({
+  biker,
   reservations,
   setToastInStore,
   resetToastInStore,
+  setReservationsInStore,
 }) {
   const cancel = (reservation) => {
     const SERVICE = new ReservationService();
@@ -32,8 +34,20 @@ function ReservationTable({
         detail: exception,
       });
       resetToastInStore();
-    })
-  }
+    }).finally(() => {
+      SERVICE.findReservations({ biker_pseudo: biker.pseudo }).then((list) => {
+        setReservationsInStore(list);
+      }).catch((exception) => {
+        setToastInStore({
+          severity: 'error',
+          summary: 'Cancel Failure',
+          detail: exception,
+        });
+        resetToastInStore();
+      setReservationsInStore()
+    });
+  });
+}
   const dateTemplate = (reservation) => reservation.date.toLocaleString();
   const statusTemplate = (reservation) => <Tag className={String('Tag-Event-').concat(reservation.status)} value={reservation.status} />;
   const cancelTemplate = (reservation) => <Button label="Cancel" onClick={() => cancel(reservation)} className="p-button p-button-danger" icon="pi pi-times" />
@@ -51,6 +65,7 @@ function ReservationTable({
           sortField="date"
           sortOrder={-1}
         >
+          <Column field="identifier" header="Reference" />
           <Column field="date" body={dateTemplate} header="Date" sortable />
           <Column field="status" body={statusTemplate} header="Status" />
           <Column field="status" body={statusTemplate} header="Status" />

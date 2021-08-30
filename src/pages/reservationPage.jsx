@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, {
   useEffect,
-  useState,
 } from 'react';
 import { Redirect, withRouter } from 'react-router';
 import { useSelector, connect } from 'react-redux';
@@ -10,26 +9,34 @@ import { setToast, resetToast } from '../store/toast/toastAction';
 import { setReservations } from '../store/reservation/reservationAction';
 import ReservationService from '../services/reservationService';
 
-function ReservationPage() {
+function ReservationPage({
+  setToastInStore,
+  resetToastInStore,
+  setReservationsInStore,
+}) {
   const biker = useSelector((state) => state.biker.people);
-  // const reservations = useSelector((state) => state.reservations.entity);
-  const [reservations, setReservations] = useState([]);
+  const reservations = useSelector((state) => state.reservations.list);
 
   useEffect(() => {
     const SERVICE = new ReservationService();
     SERVICE.findReservations({ biker_pseudo: biker.pseudo }).then((list) => {
-      setReservations(list);
+      setReservationsInStore(list);
     }).catch((exception) => {
-      console.log(exception);
+      setToastInStore({
+        severity: 'error',
+        summary: 'Data Provisionning Failure',
+        detail: exception,
+      });
+      resetToastInStore();
     })
-  }, []);
+  }, [setReservationsInStore, biker, resetToastInStore, setToastInStore]);
 
   const render = () => {
     console.log(reservations);
     if (biker && biker) {
       return (
         <section className="Page Page-Reservation">
-          <ReservationTable reservations={reservations} />
+          <ReservationTable biker={biker} reservations={reservations} />
         </section>
       );
     }
