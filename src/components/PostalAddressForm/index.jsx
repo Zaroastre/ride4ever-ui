@@ -16,6 +16,7 @@ import { setToast, resetToast } from '../../store/toast/toastAction';
 import AddressService from '../../services/addressService';
 
 import './style.css';
+import LocationService from '../../services/locationService';
 
 function PostalAddressForm({
   address,
@@ -81,6 +82,34 @@ function PostalAddressForm({
     }
   };
 
+  const locate = () => {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      const SERVICE = new LocationService();
+      SERVICE.lookupCoordinates(latitude, longitude).then((data) => {
+        if (data.results) {
+          const locatedAddress = new Address();
+          locatedAddress.number = data.results[0].components.house_number;
+          locatedAddress.street = data.results[0].components.street;
+          locatedAddress.zipCode = data.results[0].components.postcode;
+          locatedAddress.city = data.results[0].components.city.toUpperCase();
+          locatedAddress.state = data.results[0].components.state.toUpperCase();
+          locatedAddress.country = data.results[0].components.country.toUpperCase();
+          setPostalAddress(locatedAddress);
+        }
+      }).catch((exception) => {
+        console.log(exception);
+        setToastInStore({
+          severity: 'error',
+          summary: 'Coordinates Lookup Failure',
+          detail: exception,
+        });
+        resetToastInStore();
+      })
+    });
+  };
+
   return (
     <section className="Component Component-ProfileTabPanel">
       <div className="card">
@@ -91,6 +120,7 @@ function PostalAddressForm({
                 <div className="p-inputgroup">
                   <span className="p-float-label p-input-icon-right">
                     <Dropdown
+                      id="country"
                       value={postalAddress.country}
                       options={countries}
                       onChange={(e) => updateAddress('country', e.value)}
@@ -110,6 +140,7 @@ function PostalAddressForm({
                 <div className="p-inputgroup">
                   <span className="p-float-label p-input-icon-right">
                     <Dropdown
+                      id="state"
                       value={postalAddress.state}
                       options={[]}
                       onChange={(e) => updateAddress('state', e.value)}
@@ -120,7 +151,7 @@ function PostalAddressForm({
                     // valueTemplate={selectedCountryTemplate}
                     // itemTemplate={countryOptionTemplate}
                     />
-                    <label htmlFor="model">State*</label>
+                    <label htmlFor="state">State*</label>
                   </span>
                 </div>
               </div>
@@ -130,11 +161,12 @@ function PostalAddressForm({
                 <div className="p-inputgroup">
                   <span className="p-float-label p-input-icon-right">
                     <InputNumber
+                      id="zipCode"
                       value={postalAddress.zipCode}
                       onValueChange={(e) => updateAddress('zipCode', e.value)}
                       min={1}
                     />
-                    <label htmlFor="engineDisplacement">Zip Code*</label>
+                    <label htmlFor="zipCode">Zip Code*</label>
                   </span>
                 </div>
               </div>
@@ -144,6 +176,7 @@ function PostalAddressForm({
                 <div className="p-inputgroup">
                   <span className="p-float-label p-input-icon-right">
                     <Dropdown
+                      id="city"
                       value={postalAddress.city}
                       options={[]}
                       onChange={(e) => updateAddress('city', e.value)}
@@ -156,7 +189,7 @@ function PostalAddressForm({
                     // valueTemplate={selectedCountryTemplate}
                     // itemTemplate={countryOptionTemplate}
                     />
-                    <label htmlFor="model">City*</label>
+                    <label htmlFor="city">City*</label>
                   </span>
                 </div>
               </div>
@@ -166,6 +199,7 @@ function PostalAddressForm({
                 <div className="p-inputgroup">
                   <span className="p-float-label p-input-icon-right">
                     <Dropdown
+                      id="street"
                       value={postalAddress.street}
                       options={[]}
                       onChange={(e) => updateAddress('street', e.value)}
@@ -174,11 +208,11 @@ function PostalAddressForm({
                       showClear
                       editable
                       filterBy="name"
-                      placeholder="Select a City"
+                      placeholder="Select a Street"
                     // valueTemplate={selectedCountryTemplate}
                     // itemTemplate={countryOptionTemplate}
                     />
-                    <label htmlFor="engineDisplacement">Street*</label>
+                    <label htmlFor="street">Street*</label>
                   </span>
                 </div>
               </div>
@@ -188,11 +222,12 @@ function PostalAddressForm({
                 <div className="p-inputgroup">
                   <span className="p-float-label p-input-icon-right">
                     <InputNumber
+                      id="number"
                       value={postalAddress.number}
                       onValueChange={(e) => updateAddress('number', e.value)}
                       min={1}
                     />
-                    <label htmlFor="engineDisplacement">Number*</label>
+                    <label htmlFor="number">Number*</label>
                   </span>
                 </div>
               </div>
@@ -200,7 +235,8 @@ function PostalAddressForm({
           </div>
         </form>
       </div>
-      <Button label="Update" onClick={() => onSubmit(postalAddress)} />
+      <Button label="Locate" className="p-button-secondary" onClick={() => locate()} />
+      <Button label="Update" className="p-button-primary" onClick={() => onSubmit(postalAddress)} />
     </section>
   );
 }

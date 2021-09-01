@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+  useState,
+} from 'react';
 /* eslint-disable react/prop-types */
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
@@ -13,12 +15,16 @@ import './style.css';
 
 function ReservationTable({
   biker,
+  loading,
   reservations,
   setToastInStore,
   resetToastInStore,
   setReservationsInStore,
 }) {
+  const [isLoading, setIsLoading] = useState(loading);
+  
   const cancel = (reservation) => {
+    setIsLoading(true);
     const SERVICE = new ReservationService();
     SERVICE.delete(reservation).then(() => {
       setToastInStore({
@@ -45,6 +51,8 @@ function ReservationTable({
         });
         resetToastInStore();
       setReservationsInStore()
+    }).finally(() => {
+      setIsLoading(false);
     });
   });
 }
@@ -64,6 +72,7 @@ function ReservationTable({
           selectionMode="single"
           sortField="date"
           sortOrder={-1}
+          loading={isLoading}
         >
           <Column field="identifier" header="Reference" />
           <Column field="date" body={dateTemplate} header="Date" sortable />

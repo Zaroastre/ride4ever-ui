@@ -37,6 +37,7 @@ export default class RoadtripService {
       axios.get(String(this.url), { headers: this.headers, params: filters })
         .then((response) => {
           const roadtrips = [];
+          console.log(response.data);
           if (Array.isArray(response.data)) {
             for (let index = 0; index < response.data.length; index += 1) {
               roadtrips.push(RoadTrip.parse(response.data[index]));

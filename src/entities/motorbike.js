@@ -1,3 +1,5 @@
+import Biker from "./biker";
+
 export default class Motorbike {
   constructor() {
     this.identifier = 0;
@@ -13,6 +15,7 @@ export default class Motorbike {
 
     this.licensePlate = null;
     this.isRestrained = false;
+    this.biker = null;
 
     this.picture = null;
   }
@@ -39,6 +42,7 @@ export default class Motorbike {
         entity.year = json.year;
         entity.fuelTankSize = json.fuelTankSize;
         entity.type = json.type;
+        entity.biker = Biker.parse(json.biker);
         entity.isRestrained = json.isRestrained;
         entity.picture = json.picture;
       }

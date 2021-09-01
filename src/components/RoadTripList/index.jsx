@@ -6,14 +6,15 @@ import React, {
   useEffect,
 } from 'react';
 
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
 
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
-import { InputSwitch } from 'primereact/inputswitch';
+import { Message } from 'primereact/message';
+import { Timeline } from 'primereact/timeline';
 
 import Reservation from '../../entities/reservation';
 import { setToast, resetToast } from '../../store/toast/toastAction';
@@ -23,6 +24,7 @@ import './style.css';
 import { Link } from 'react-router-dom';
 import ReservationService from '../../services/reservationService';
 import RoadtripService from '../../services/roadtripService';
+import RegistrationStatus from '../../enumerations/registrationStatus';
 
 function RoadTripList({
   biker,
@@ -31,24 +33,28 @@ function RoadTripList({
   setReservationsInStore,
   setToastInStore,
   resetToastInStore,
-  enableReservation=false,
+  enableReservation = false,
 }) {
-  const [myRoadTrips, setMyRoadTrips] = useState([]);
-  const [updatedRoadTrips, setUpdatedRoadTrips] = useState([...roadtrips]);
+  const reservationsInStore = useSelector((state) => state.reservations.list);
+  const [roadTripsList, setRoadTripsList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    let data = [...roadtrips];
-    for (let roadTripIndex = 0; roadTripIndex < data.length; roadTripIndex += 1) {
-      for (let reservationIndex = 0; reservationIndex < reservations.length; reservationIndex += 1) {
-        if (reservations[reservationIndex].roadTrip === data[roadTripIndex].identifier) {
-          data[roadTripIndex].reservation = reservations[reservationIndex]; 
-        } else {
-          data[roadTripIndex].reservation = null;
+    setIsLoading(true);
+    const list = [];
+    for (let i = 0; i < roadtrips.length; i++) {
+      const roadtrip = { ...roadtrips[i] };
+      for (let j = 0; j < reservationsInStore.length; j++) {
+        const reservation = { ...reservationsInStore[j] };
+        if (reservation.roadTrip.identifier === roadtrip.identifier) {
+          roadtrip['reservation'] = reservation;
         }
       }
+      list.push(roadtrip);
     }
-    setUpdatedRoadTrips(data);
-  }, [reservations, roadtrips, setUpdatedRoadTrips]);
+    setRoadTripsList(list);
+    setIsLoading(false);
+  }, [roadtrips, reservationsInStore, setRoadTripsList]);
 
 
   const roadTripTypeTemplate = (roadtrip) => {
@@ -66,28 +72,29 @@ function RoadTripList({
     if (roadtrip) {
       return (
         <Link to={String('/roadtrips/').concat(roadtrip.identifier)}>
-          <Button icon="pi pi-eye" className="p-button-secondary" />
+          <Button icon="pi pi-eye" className="p-button-secondary" label="More details" />
         </Link>
       );
     }
     return (null);
   };
 
-  const updateMyRoadTrips = (roadtrip, isCandidate) => {
-    const myList = [...myRoadTrips];
-    if (isCandidate) {
-      const reservation = new Reservation();
-      reservation.biker = biker.identifier;
-      reservation.date = new Date();
-      reservation.roadTrip = roadtrip.identifier;
-      reservation.status = 'CREATED';
+  const updateMyRoadTrips = (roadtrip) => {
+    setIsLoading(true);
+    const myList = [...roadTripsList];
+    const reservation = new Reservation();
+    reservation.biker = biker;
+    reservation.date = new Date();
+    reservation.roadTrip = roadtrip;
+    reservation.status = RegistrationStatus.PENDING;
 
-      const RESERVATION_SERVICE = new ReservationService();
-      RESERVATION_SERVICE.create(reservation).then((r1) => {
-        const list = [...reservations];
-        list.push(r1);
-        setReservations(list);
-
+    const RESERVATION_SERVICE = new ReservationService();
+    RESERVATION_SERVICE.create(reservation).then((r1) => {
+      const list = [...reservations];
+      list.push(r1);
+      setReservations(list);
+      RESERVATION_SERVICE.findReservations({ biker_pseudo: biker.pseudo }).then((list) => {
+        setReservationsInStore(list);
       }).catch((exception) => {
         setToastInStore({
           severity: 'error',
@@ -96,34 +103,44 @@ function RoadTripList({
         });
         resetToastInStore();
       });
+    }).catch((exception) => {
+      setToastInStore({
+        severity: 'error',
+        summary: 'Reservation Failure',
+        detail: exception,
+      });
+      resetToastInStore();
+    });
 
-    } else {
-      const index = myRoadTrips.findIndex((trip) => trip.identifier === roadtrip.identifier);
-      if (index >= 0) {
-        myList.splice(index, 1);
-      }
-      if (roadtrip.reservation) {
-        const RESERVATION_SERVICE = new ReservationService();
-        RESERVATION_SERVICE.delete(roadtrip.reservation).then((r1) => {
-          console.log(r1);
-        }).catch((exception) => {
-          setToastInStore({
-            severity: 'error',
-            summary: 'Reservation Failure',
-            detail: exception,
-          });
-          resetToastInStore();
-        });
-      }
-    }
-    setMyRoadTrips(myList);
+    const SERVICE = new ReservationService();
+    SERVICE.findReservations({ biker_pseudo: biker.pseudo }).then((list) => {
+      setReservationsInStore(list);
+    }).catch((exception) => {
+      setToastInStore({
+        severity: 'error',
+        summary: 'Reservation Failure',
+        detail: exception,
+      });
+      resetToastInStore();
+    }).finally(() => {
+      setIsLoading(false);
+    });
+    setRoadTripsList(myList);
   };
 
   const joinTemplate = (roadtrip) => {
     console.log(roadtrip);
     if (roadtrip) {
+      if (roadtrip.reservation) {
+        return (<Message severity='success' text='Subscribed' />);
+      }
       return (
-        <InputSwitch checked={roadtrip.reservation} onChange={(e) => updateMyRoadTrips(roadtrip, e.value)} />
+        <Button
+          label={(roadtrip.reservation) ? "Reserved" : "Join"}
+          disabled={roadtrip.reservation}
+          icon={String('pi ').concat((roadtrip.reservation) ? "pi-check" : "pi-plus")}
+          onClick={(e) => updateMyRoadTrips(roadtrip)}
+        />
       );
     }
     return (null);
@@ -167,10 +184,13 @@ function RoadTripList({
 
   const stopDateTemplate = (roadtrip) => formatDate(roadtrip.endDate);
 
-  const startCityTemplate = (roadtrip) => String(roadtrip.startAddress.city)
-    .concat(' (')
-    .concat(roadtrip.startAddress.zipCode)
-    .concat(')');
+  const startCityTemplate = (roadtrip) => {
+    console.log(roadtrip);
+    return String(roadtrip.startAddress.city)
+      .concat(' (')
+      .concat(roadtrip.startAddress.zipCode)
+      .concat(')');
+  }
 
   const stopCityTemplate = (roadtrip) => String(roadtrip.stopAddress.city)
     .concat(' (')
@@ -181,23 +201,50 @@ function RoadTripList({
     <Tag className={String('Tag-').concat(roadtrip.status)} value={roadtrip.status} />
   );
 
+  const tripTemplate = (roadtrip) => {
+    const events = [
+      {
+        place: String(roadtrip.startAddress.city)
+          .concat(' (')
+          .concat(roadtrip.startAddress.zipCode)
+          .concat('), ')
+          .concat(roadtrip.startAddress.country),
+        date: formatDate(roadtrip.startDate),
+      },{
+        place: String(roadtrip.stopAddress.city)
+          .concat(' (')
+          .concat(roadtrip.stopAddress.zipCode)
+          .concat('), ')
+          .concat(roadtrip.stopAddress.country),
+        date: formatDate(roadtrip.endDate),
+      },
+    ];
+    return (
+      <div className="TimeLineContainer">
+        <Timeline value={events} opposite={(item) => item.place} content={(item) => <small className="p-text-secondary">{item.date}</small>} />
+      </div>
+    );
+  };
+
   return (
     <div className="Component Component-RoadTripList">
       <div className="card">
         <DataTable
-          value={updatedRoadTrips}
+          value={roadTripsList}
           paginator
           rows={10}
           className="p-datatable-customers"
           emptyMessage="No road trips found."
           removableSort
           selectionMode="single"
+          loading={isLoading}
         >
-          <Column field="startDate" header="Start Date" body={startDateTemplate} sortable />
+          <Column style={{ width: '22rem' }} header="Trip" body={tripTemplate} sortable />
+          {/* <Column field="startDate" header="Start Date" body={startDateTemplate} sortable />
           <Column field="endDate" header="End Date" body={stopDateTemplate} sortable />
-          <Column field="startAddress.city" header="Start City" body={startCityTemplate} sortable />
-          <Column field="stopAddress.city" header="Stop City" body={stopCityTemplate} sortable />
-          <Column field="KilometersAverage" header="Distance" sortable />
+          <Column field="startAddress" header="Start City" body={startCityTemplate} sortable />
+          <Column field="stopAddress" header="Stop City" body={stopCityTemplate} sortable />
+          <Column field="KilometersAverage" header="Distance" sortable /> */}
           <Column field="status" header="Status" body={statusTemplate} sortable />
           <Column field="maxBikers" header="Max Bikers" body={maxBikersTemplate} sortable />
           <Column field="roadTripType" header="Type" body={roadTripTypeTemplate} sortable />
@@ -208,10 +255,10 @@ function RoadTripList({
           }
 
         </DataTable>
-        {(enableReservation) ? (
+        {/* {(enableReservation) ? (
           <Button label="Confirm reservations" icon="pi pi-lock" className="p-button-primary" />
         ) : (null)
-        }
+        } */}
       </div>
     </div>
   );

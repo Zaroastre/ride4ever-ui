@@ -1,20 +1,44 @@
 import React from 'react';
 import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import './style.css';
 
 function Footer() {
   return (
     <footer className="Component Component-Footer">
-      <nav>
-        <ul>
-          <li>A propos</li>
-          <li>Qui sommes nous ?</li>
-          <li>Nos Partenaires</li>
-          <li>F.A.Q</li>
-          <li>Contact-nous</li>
-        </ul>
-      </nav>
+      <div>
+        <span>
+          <nav>
+            <ul>
+              <li>
+                <Link to="/about">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link to="/us">
+                  Who are we ?
+                </Link>
+              </li>
+              <li>
+                <Link to="/partners">
+                  Partners
+                </Link>
+              </li>
+              <li>
+                <Link to="/help">
+                  F.A.Q
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </span>
+        <span>
+          Email
+          Phone
+        </span>
+      </div>
       <p>
         <small>
           Copyright &copy;

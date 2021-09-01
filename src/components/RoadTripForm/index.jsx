@@ -54,11 +54,11 @@ function RoadTripForm({
 
   useEffect(() => {
   }, []);
-  
+
   const showPostalAddressPanel = (order, address) => {
     setAddressType(order);
     if (!address || (address.city === null || address.country == null)) {
-      navigator.geolocation.getCurrentPosition(function(position) {
+      navigator.geolocation.getCurrentPosition(function (position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const SERVICE = new LocationService();
@@ -89,7 +89,7 @@ function RoadTripForm({
   }
 
   useEffect(() => {
-    if (biker && biker) {
+    if (biker) {
       const trip = new RoadTrip();
       // trip.organizer = biker;
       if (biker.address) {
@@ -109,47 +109,27 @@ function RoadTripForm({
   };
 
   const accept = () => {
-    // roadtrip.startAddress = startAddress;
-    // roadtrip.stopAddress = stopAddress;
     roadtrip.status = 'SOON';
-    // roadtrip.bikers.push(roadtrip.organizer);
-    const SERVICE = new RoadtripService();
-    SERVICE.create(roadtrip).then((rt1) => {
-      rt1.organizer = biker.identifier;
-      SERVICE.update(rt1.identifier, rt1).then((rt2) => {
-        const ADDRESS_SERVICE = new AddressService();
-        ADDRESS_SERVICE.create(startAddress).then((updatedStartAddress) => {
-          ADDRESS_SERVICE.create(stopAddress).then((updatedStopAddress) => {
-            rt2.startAddress = updatedStartAddress.identifier;
-            rt2.stopAddress = updatedStopAddress.identifier;
-            SERVICE.update(rt2.identifier, rt2).then(() => {
-              setToastInStore({
-                severity: 'success',
-                summary: 'Road Trip created',
-                detail: 'Your road trip is successfully created. Ride safe!',
-              });
-              resetToastInStore();
-              history.push('/dashboard');
-            }).catch((exception) => {
-              setToastInStore({
-                severity: 'error',
-                summary: 'Road Trip Update Failure',
-                detail: exception,
-              });
-              resetToastInStore();
-            });
-          }).catch((exception) => {
-            setToastInStore({
-              severity: 'error',
-              summary: 'Stop Address Creation Failure',
-              detail: exception,
-            });
-            resetToastInStore();
+    // roadtrip.bikers.push(biker);
+    const ADDRESS_SERVICE = new AddressService();
+    ADDRESS_SERVICE.create(startAddress).then((updatedStartAddress) => {
+      ADDRESS_SERVICE.create(stopAddress).then((updatedStopAddress) => {
+        roadtrip.organizer = biker;
+        roadtrip.startAddress = updatedStartAddress;
+        roadtrip.stopAddress = updatedStopAddress;
+        const ROADTRIP_SERVICE = new RoadtripService();
+        ROADTRIP_SERVICE.create(roadtrip).then((rt1) => {
+          setToastInStore({
+            severity: 'success',
+            summary: 'Road Trip created',
+            detail: 'Your road trip is successfully created. Ride safe!',
           });
+          resetToastInStore();
+          history.push('/dashboard');
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
-            summary: 'Start Address Creation Failure',
+            summary: 'Road Trip Creation Failure',
             detail: exception,
           });
           resetToastInStore();
@@ -157,7 +137,7 @@ function RoadTripForm({
       }).catch((exception) => {
         setToastInStore({
           severity: 'error',
-          summary: 'Road Trip Update Failure',
+          summary: 'Stop Address Creation Failure',
           detail: exception,
         });
         resetToastInStore();
@@ -165,11 +145,12 @@ function RoadTripForm({
     }).catch((exception) => {
       setToastInStore({
         severity: 'error',
-        summary: 'Road Trip Creation Failure',
+        summary: 'Start Address Creation Failure',
         detail: exception,
       });
       resetToastInStore();
     });
+
   };
 
   const confirm = (event) => {
@@ -214,6 +195,51 @@ function RoadTripForm({
     setAddressInForm(new Address());
     setIsAddressFormVisible(false);
   };
+
+  const isButtonDisabled = () => {
+    console.log('c1');
+    if (!roadtrip.title || roadtrip.title.length < 5) {
+      return true;
+    }
+    console.log('c1');
+    if (!roadtrip.description || roadtrip.description.length < 5) {
+      return true;
+    }
+    console.log('c1');
+    if (!roadtrip.maxBikers || roadtrip.maxBikers < 1) {
+      return true;
+    }
+    console.log('c1');
+    if (!startAddress.street || startAddress.street.length < 2) {
+      return true;
+    }
+    console.log('c1');
+    if (!startAddress.zipCode || startAddress.zipCode < 0) {
+      return true;
+    }
+    console.log('c1');
+    if (!startAddress.city || startAddress.city.length < 2) {
+      return true;
+    }
+    console.log('c1');
+    if (!startAddress.country || startAddress.country.length < 2) {
+      return true;
+    }
+    console.log('c1');
+    if (!roadtrip.startDate || roadtrip.startDate.length < 2) {
+      return true;
+    }
+    console.log('c1');
+    if (!roadtrip.endDate || roadtrip.endDate.length < 2) {
+      return true;
+    }
+    console.log('c1');
+    if (roadtrip.endDate < roadtrip.startDate) {
+      return true;
+    }
+    console.log('c1');
+    return false;
+  }
 
   return (
     <section className="Page Page-RoadTripForm">
@@ -310,6 +336,7 @@ function RoadTripForm({
                   onClick={(e) => showPostalAddressPanel('startAddress', startAddress)}
                   readOnly
                   required
+                  showClear
                 />
                 <label htmlFor="startAddress">Start Address*</label>
               </span>
@@ -381,7 +408,7 @@ function RoadTripForm({
         </dl>
         <dl>
           <Button label="Cancel" type="reset" className="p-button-secondary" icon="pi pi-times" onClick={() => cancel()} />
-          <Button label="Create" className="p-button-primary" icon="pi pi-check" onClick={(event) => confirm(event)} />
+          <Button label="Create" className="p-button-primary" icon="pi pi-check" onClick={(event) => confirm(event)} disabled={isButtonDisabled()} />
         </dl>
       </form>
       {

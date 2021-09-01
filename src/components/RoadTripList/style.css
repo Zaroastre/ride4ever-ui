@@ -7,3 +7,9 @@ p.alert-level-limit {
 p.alert-level-full {
     color: rgba(150,0,0,1);
 }
+
+.TimeLineContainer {
+    display: block;
+    min-width: 20rem;
+    text-align: center;
+}

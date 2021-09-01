@@ -1,4 +1,3 @@
-import Motorbike from './motorbike';
 export default class Biker {
   constructor() {
     this.identifier = 0;
@@ -10,7 +9,7 @@ export default class Biker {
     this.driverLicenceDate = null;
     this.gender = null;
     this.email = null;
-    this.address = 0;
+    this.address = null;
     this.phoneNumber = null;
     this.password = null;
     this.biography = null;
@@ -25,7 +24,7 @@ export default class Biker {
     this.canRepairMotorbike = false;
     this.isTrainedForFirstRescue = false;
     this.hadAllreadyRideWithPassenger = false;
-    this.motorbikes = [];
+    // this.motorbikes = [];
   }
 
   static parse(json) {
@@ -64,11 +63,11 @@ export default class Biker {
         entity.canRepairMotorbike = json.canRepairMotorbike;
         entity.isTrainedForFirstRescue = json.isTrainedForFirstRescue;
         entity.hadAllreadyRideWithPassenger = json.hadAllreadyRideWithPassenger;
-        if (json.motorbikes instanceof Array) {
-          for (let index = 0; index < json.motorbikes.length; index += 1) {
-            entity.motorbikes.push(Motorbike.parse(json.motorbikes[index]));
-          }
-        }
+        // if (json.motorbikes instanceof Array) {
+        //   for (let index = 0; index < json.motorbikes.length; index += 1) {
+        //     entity.motorbikes.push(Motorbike.parse(json.motorbikes[index]));
+        //   }
+        // }
       }
     }
     return entity;

@@ -21,6 +21,7 @@ function SearchPage() {
     if (biker) {
       const SERVICE = new RoadtripService();
       SERVICE.findRoadtrips().then((array) => {
+        console.log(array);
         setRoadTrips(array);
         const RESERVATION_SERVICE = new ReservationService();
         RESERVATION_SERVICE.findReservations({ biker_pseudo: biker.pseudo }).then((list) => {

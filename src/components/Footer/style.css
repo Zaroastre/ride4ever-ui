@@ -16,3 +16,23 @@ footer p {
     margin: 0;
     padding: 0;
 }
+
+footer > div {
+    display: flex;
+    justify-content: space-between;
+}
+
+footer a {
+    margin: 0;
+    padding: 0;
+}
+
+footer > div > span nav,
+footer > div > span nav ul,
+footer > div > span nav ul li,
+footer > div > span nav ul li a {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+}

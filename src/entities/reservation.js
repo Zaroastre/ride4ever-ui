@@ -1,3 +1,6 @@
+import Biker from "./biker";
+import RoadTrip from "./roadtrip";
+
 export default class Reservation {
   constructor() {
     this.identifier = 0;
@@ -20,8 +23,8 @@ export default class Reservation {
       }
       if (entity !== null) {
         entity.identifier = json.identifier;
-        entity.biker = json.biker;
-        entity.roadTrip = json.roadTrip;
+        entity.biker = Biker.parse(json.biker);
+        entity.roadTrip = RoadTrip.parse(json.roadTrip);
         entity.date = new Date(json.date);
         entity.status = json.status;
       }

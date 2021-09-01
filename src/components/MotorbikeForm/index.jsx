@@ -103,40 +103,41 @@ function MotorbikeForm({
     });
   }, [setBrands]);
 
-  const updateBikerMotorbike = () => {
-    const SERVICE = new BikerService();
-    if (biker && motorbike) {
-      biker.motorbikes.push(motorbike);
-      SERVICE.update(biker.identifier, biker).then((updatedBiker) => {
-        setBikerInStore(updatedBiker);
-        setToastInStore({
-          severity: 'success',
-          summary: 'Biker Motorcycles Updated',
-          detail: 'You are now connected.',
-        });
-        resetToastInStore();
-        onHide();
-      }).catch((exception) => {
-        setToastInStore({
-          severity: 'error',
-          summary: 'Biker Motorcycles Update Failure',
-          detail: exception,
-        });
-        resetToastInStore();
-      });
-    }
-  };
+  // const updateBikerMotorbike = () => {
+  //   const SERVICE = new BikerService();
+  //   if (biker && motorbike) {
+  //     biker.motorbikes.push(motorbike);
+  //     SERVICE.update(biker.identifier, biker).then((updatedBiker) => {
+  //       setBikerInStore(updatedBiker);
+  //       setToastInStore({
+  //         severity: 'success',
+  //         summary: 'Biker Motorcycles Updated',
+  //         detail: 'You are now connected.',
+  //       });
+  //       resetToastInStore();
+  //       onHide();
+  //     }).catch((exception) => {
+  //       setToastInStore({
+  //         severity: 'error',
+  //         summary: 'Biker Motorcycles Update Failure',
+  //         detail: exception,
+  //       });
+  //       resetToastInStore();
+  //     });
+  //   }
+  // };
 
   const createHandle = () => {
     const SERVICE = new MotorbikeService();
     if (motorbike.identifier <= 0) {
+      motorbike.biker = biker;
       SERVICE.create(motorbike).then((updatedEntity) => {
         setMotorbike(updatedEntity);
-        updateBikerMotorbike();
+        // updateBikerMotorbike();
       }).catch((exception) => {
         setToastInStore({
           severity: 'error',
-          summary: 'Address Creation Failure',
+          summary: 'Motorbike Creation Failure',
           detail: exception,
         });
         resetToastInStore();
@@ -144,7 +145,7 @@ function MotorbikeForm({
     } else {
       SERVICE.update(motorbike.identifier, motorbike).then((updatedEntity) => {
         setMotorbike(updatedEntity);
-        updateBikerMotorbike();
+        // updateBikerMotorbike();
       }).catch((exception) => {
         setToastInStore({
           severity: 'error',
