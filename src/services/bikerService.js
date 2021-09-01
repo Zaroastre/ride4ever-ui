@@ -32,10 +32,10 @@ export default class BikerService {
     });
   }
 
-  update(identifier, entity) {
+  update(identifier, biker) {
     return new Promise((resolve, reject) => {
-      if (entity instanceof Biker) {
-        axios.put(String(this.url).concat('/').concat(identifier), entity, { headers: this.headers })
+      if (biker instanceof Biker) {
+        axios.put(String(this.url).concat('/').concat(identifier), biker, { headers: this.headers })
           .then((response) => {
             resolve(Biker.parse(response.data));
           })
@@ -47,7 +47,7 @@ export default class BikerService {
             }
           });
       } else {
-        reject('Invalid data type for data \'entity\'.');
+        reject('Invalid data type for data \'biker\'.');
       }
     });
   }

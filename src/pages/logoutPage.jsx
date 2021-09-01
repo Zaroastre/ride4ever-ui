@@ -54,7 +54,7 @@ function LogoutPage({
       cookies.jwt = null;
       history.push('/login');
     });
-  }, [resetBikerInStore, history, biker, cookies, resetToastInStore, setToastInStore, setCookie, setReservationsInStore]);
+  }, [resetBikerInStore, biker, resetToastInStore, setToastInStore, setCookie, setReservationsInStore]);
 
   useEffect(() => {
     logout();

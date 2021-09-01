@@ -13,6 +13,7 @@ import { setReservations } from '../../store/reservation/reservationAction';
 import DICTIONARY from '../../locales/dictionary';
 import ReservationService from '../../services/reservationService';
 import './style.css';
+import RegistrationStatus from '../../enumerations/registrationStatus';
 
 function Header() {
   const biker = useSelector((state) => state.biker.people);
@@ -22,7 +23,7 @@ function Header() {
   useEffect(() => {
     if (biker !== null) {
       const SERVICE = new ReservationService();
-      SERVICE.findReservations({ biker_pseudo: biker.pseudo, status: 'CREATED' }).then((list) => {
+      SERVICE.findReservations({ biker_pseudo: biker.pseudo, status: RegistrationStatus.PENDING }).then((list) => {
         setReservations(list);
       }).catch((exception) => {
         console.log(exception);
@@ -35,7 +36,7 @@ function Header() {
       <div className="Bar BarTop">
         <span className="LogoContainer">
           <a href="./">
-            <img className="AppLogo" src="/assets/images/icons/NIRAHTECH_ICON.svg" alt="icon" />
+            <img className="AppLogo" src="/assets/images/logo/LOGO06.svg" alt="icon" />
           </a>
         </span>
         <span className="SecondaryMenu">
@@ -63,7 +64,7 @@ function Header() {
                   <Button tooltip="Reservations" tooltipOptions={{ position: 'bottom' }}>
                     <i className="pi pi-calendar" />
                     {
-                      (reservations.length > 0) ? (
+                      (reservations && reservations.length > 0) ? (
                         <span className="BadgeContainer">
                           <Badge value={reservations.length} severity="danger" className="p-mr-2" />
                         </span>

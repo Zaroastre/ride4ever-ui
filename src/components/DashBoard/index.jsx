@@ -92,7 +92,7 @@ function DashBoard({
             footer={footerTemplate(
               pendingRoadTripsRequests,
               DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.BUTTON.OPTION_1[language],
-              '/tbd',
+              '/reservation',
               DICTIONARY.PAGE.DASHBOARD.PENDING_REQUESTS.BUTTON.OPTION_2[language],
               '/search',
             )}

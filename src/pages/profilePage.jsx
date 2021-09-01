@@ -9,20 +9,27 @@ import { Link, useHistory } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import ProfileTabPanel from '../components/ProfileTabPanel';
 import ActivityService from '../services/activityService';
+import MotorbikeService from '../services/motorbikeService';
 
 function ProfilePage() {
   const history = useHistory();
   const biker = useSelector((state) => state.biker.people);
   const [activities, setActivities] = useState([]);
+  const [motorbikes, setMotorbikes] = useState([]);
 
   useEffect(() => {
     if (!biker) {
       history.push('/login');
     } else {
-      const SERVICE = new ActivityService();
-      console.log(biker);
-      SERVICE.findAll({ pseudo: biker.pseudo }).then((list) => {
+      const ACTIVITY_SERVICE = new ActivityService();
+      ACTIVITY_SERVICE.findAll({ pseudo: biker.pseudo }).then((list) => {
         setActivities(list);
+      }).catch((exception) => {
+        console.error(exception);
+      });
+      const MOTORBIKE_SERVICE = new MotorbikeService();
+      MOTORBIKE_SERVICE.findAll({ biker_pseudo: biker.pseudo }).then((list) => {
+        setMotorbikes(list);
       }).catch((exception) => {
         console.error(exception);
       });
@@ -36,7 +43,7 @@ function ProfilePage() {
           <Link to="/logout">
             <Button label="Disconnect" className="p-button-danger" icon="pi pi-sign-out" />
           </Link>
-          <ProfileTabPanel biker={biker} activities={activities} />
+          <ProfileTabPanel biker={biker} motorbikes={motorbikes} activities={activities} />
         </section>
       );
     }

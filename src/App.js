@@ -66,6 +66,36 @@ function App({
         resetToastInStore();
       });
     }
+    if (!window.Notification) {
+      console.log('Browser does not support notifications.');
+    } else {
+      // check if permission is already granted
+      if (Notification.permission === 'granted') {
+        const notification = new Notification("[R4E] Notification Broker", {
+          body: "We are testing notification desktop engine."
+        });
+        notification.onclick = (e) => {
+          window.location.href = "https://google.com";
+        };
+      } else {
+        // request permission from user
+        Notification.requestPermission().then(function (p) {
+          if (p === 'granted') {
+            // show notification here
+            const notification = new Notification("[R4E] Notification Broker", {
+              body: "We are testing notification desktop engine."
+            });
+            notification.onclick = () => {
+              window.location.href = "https://google.com";
+            };
+          } else {
+            console.log('User blocked notifications.');
+          }
+        }).catch(function (err) {
+          console.error(err);
+        });
+      }
+    }
   }, [biker, setReservationsInStore, setToastInStore, resetToastInStore]);
 
   // const items = [

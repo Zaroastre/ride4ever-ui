@@ -2,7 +2,7 @@
 import React, {
   useEffect,
 } from 'react';
-import { Redirect, withRouter } from 'react-router';
+import { Redirect, useHistory, withRouter } from 'react-router';
 import { useSelector, connect } from 'react-redux';
 import ReservationTable from '../components/ReservationTable';
 import { setToast, resetToast } from '../store/toast/toastAction';
@@ -15,21 +15,26 @@ function ReservationPage({
   setReservationsInStore,
 }) {
   const biker = useSelector((state) => state.biker.people);
+  const history = useHistory();
   const reservations = useSelector((state) => state.reservations.list);
 
   useEffect(() => {
-    const SERVICE = new ReservationService();
-    SERVICE.findReservations({ biker_pseudo: biker.pseudo }).then((list) => {
-      setReservationsInStore(list);
-    }).catch((exception) => {
-      setToastInStore({
-        severity: 'error',
-        summary: 'Data Provisionning Failure',
-        detail: exception,
-      });
-      resetToastInStore();
-    })
-  }, [setReservationsInStore, biker, resetToastInStore, setToastInStore]);
+    if (biker) {
+      const SERVICE = new ReservationService();
+      SERVICE.findReservations({ biker_pseudo: biker.pseudo }).then((list) => {
+        setReservationsInStore(list);
+      }).catch((exception) => {
+        setToastInStore({
+          severity: 'error',
+          summary: 'Data Provisionning Failure',
+          detail: exception,
+        });
+        resetToastInStore();
+      })
+    } else {
+      history.push('/login');
+    }
+  }, [setReservationsInStore, history, biker, resetToastInStore, setToastInStore]);
 
   const render = () => {
     console.log(reservations);

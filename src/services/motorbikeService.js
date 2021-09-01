@@ -12,10 +12,10 @@ export default class MotorbikeService {
     };
   }
 
-  create(entity) {
+  create(motorbike) {
     return new Promise((resolve, reject) => {
-      if (entity instanceof Motorbike) {
-        axios.post(String(this.url), entity, { headers: this.headers })
+      if (motorbike instanceof Motorbike) {
+        axios.post(String(this.url), motorbike, { headers: this.headers })
           .then((response) => {
             resolve(Motorbike.parse(response.data));
           })
@@ -49,6 +49,30 @@ export default class MotorbikeService {
       } else {
         reject('Invalid data type for data \'motorbike\'.');
       }
+    });
+  }
+
+  findAll(filters = null) {
+    return new Promise((resolve, reject) => {
+      axios.get(String(this.url), { headers: this.headers, params: filters })
+        .then((response) => {
+          const motorbikes = [];
+          if (Array.isArray(response.data)) {
+            for (let index = 0; index < response.data.length; index += 1) {
+              motorbikes.push(Motorbike.parse(response.data[index]));
+            }
+          } else {
+            motorbikes.push(Motorbike.parse(response.data));
+          }
+          resolve(motorbikes);
+        })
+        .catch((exception) => {
+          if (exception.response === undefined) {
+            reject('Server is unreachable.');
+          } else {
+            reject(exception.response.data.error);
+          }
+        });
     });
   }
 

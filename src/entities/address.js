@@ -25,9 +25,9 @@ export default class Address {
         entity.identifier = json.identifier;
         entity.number = json.number;
         entity.street = json.street;
+        entity.state = json.state;
         entity.zipCode = json.zipCode;
         entity.city = json.city;
-        entity.state = json.state;
         entity.country = json.country;
         entity.weather = json.weather;
       }

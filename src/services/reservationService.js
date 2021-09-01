@@ -74,7 +74,11 @@ export default class ReservationService {
   }
 
   delete(reservation) {
+    console.log(reservation);
     return new Promise((resolve, reject) => {
+      console.log(reservation);
+      console.log(new Reservation());
+      console.log(reservation instanceof Reservation);
       if (reservation instanceof Reservation) {
         axios.delete(String(this.url).concat('/').concat(reservation.identifier), { headers: this.headers })
           .then(() => {

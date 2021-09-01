@@ -23,6 +23,7 @@ import Address from '../../entities/address';
 
 function ProfileTabPanel({
   biker,
+  motorbikes,
   activities,
   setBikerInStore,
   resetToastInStore,
@@ -35,6 +36,7 @@ function ProfileTabPanel({
   const updateBikerAddress = (postalAddress) => {
     const SERVICE = new BikerService();
     if (biker && postalAddress) {
+      console.log(postalAddress);
       biker.address = postalAddress;
       SERVICE.update(biker.identifier, biker).then((updatedBiker) => {
         setBikerInStore(updatedBiker);
@@ -60,7 +62,7 @@ function ProfileTabPanel({
     if (postalAddress.identifier <= 0) {
       SERVICE.create(postalAddress).then((updatedAddress) => {
         setPostalAddress(updatedAddress);
-        updateBikerAddress(postalAddress);
+        updateBikerAddress(updatedAddress);
       }).catch((exception) => {
         setToastInStore({
           severity: 'error',
@@ -98,7 +100,7 @@ function ProfileTabPanel({
         </TabPanel>
         <TabPanel header="Motorcycle Clubs" />
         <TabPanel header="Garage">
-          <GarageInfoPanel motorbikes={biker.motorbikes} />
+          <GarageInfoPanel motorbikes={motorbikes} />
           <Button icon="pi pi-plus" label="Add new motorbike" onClick={() => setIsMotorbikeFormVisible(true)} />
           {
             (isMotorbikeFormVisible) ? (

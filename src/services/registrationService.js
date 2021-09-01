@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Pilot from '../entities/biker';
+import Biker from '../entities/biker';
 import AbstractService from './abstractService';
 
 export default class RegistrationService {
@@ -14,10 +14,10 @@ export default class RegistrationService {
 
   create(biker) {
     return new Promise((resolve, reject) => {
-      if (biker instanceof Pilot) {
+      if (biker instanceof Biker) {
         axios.post(String(this.url).concat('/register'), biker, { headers: this.headers })
           .then((response) => {
-            resolve(Pilot.parse(response.data));
+            resolve(Biker.parse(response.data));
           })
           .catch((exception) => {
             if (exception.response === undefined) {
@@ -34,7 +34,7 @@ export default class RegistrationService {
 
   delete(biker) {
     return new Promise((resolve, reject) => {
-      if (biker instanceof Pilot) {
+      if (biker instanceof Biker) {
         axios.delete(String(this.url).concat('/unregister'), biker, { headers: this.headers })
           .then(() => {
             resolve();
