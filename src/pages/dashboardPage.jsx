@@ -33,18 +33,19 @@ function DashboardPage({
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
-            summary: 'Provisioning Failure',
+            summary: 'Roadtrips Provisioning Failure',
             detail: exception,
           });
           resetToastInStore();
         });
-        ROADTRIP_SERVICE.findRoadtrips({ biker_pseudo: biker.pseudo, status: 'SOON' })
-        .then((roadTrips) => {
+        RESERVATION_SERVICE.findReservations({ biker_pseudo: biker.pseudo, status: 'ACCEPTED' })
+        .then((reservations) => {
+          const roadTrips = reservations.filter((reservation) => reservation.roadTrip.status === 'SOON').map((reservation) => reservation.roadTrip);
           setUpcomingRoadTrips(roadTrips);
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
-            summary: 'Provisioning Failure',
+            summary: 'Reservations Provisioning Failure',
             detail: exception,
           });
           resetToastInStore();
@@ -55,7 +56,7 @@ function DashboardPage({
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
-            summary: 'Provisioning Failure',
+            summary: 'Reservation  Provisioning Failure',
             detail: exception,
           });
           resetToastInStore();
@@ -66,7 +67,7 @@ function DashboardPage({
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
-            summary: 'Provisioning Failure',
+            summary: 'Roadtrips Provisioning Failure Failure',
             detail: exception,
           });
           resetToastInStore();

@@ -26,7 +26,7 @@ function ReservationPage({
       }).catch((exception) => {
         setToastInStore({
           severity: 'error',
-          summary: 'Data Provisionning Failure',
+          summary: 'Reservations Provisionning Failure',
           detail: exception,
         });
         resetToastInStore();
@@ -37,10 +37,10 @@ function ReservationPage({
   }, [setReservationsInStore, history, biker, resetToastInStore, setToastInStore]);
 
   const render = () => {
-    console.log(reservations);
     if (biker && biker) {
       return (
         <section className="Page Page-Reservation">
+          <h1>Reservation</h1>
           <ReservationTable biker={biker} reservations={reservations} />
         </section>
       );

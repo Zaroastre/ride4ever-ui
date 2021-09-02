@@ -40,6 +40,7 @@ function ProfilePage() {
     if (biker && biker) {
       return (
         <section className="Page Page-Profile">
+          <h1>Profile</h1>
           <Link to="/logout">
             <Button label="Disconnect" className="p-button-danger" icon="pi pi-sign-out" />
           </Link>

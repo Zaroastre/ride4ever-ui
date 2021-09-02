@@ -1,0 +1,43 @@
+p.alert-level-ras {
+    color: rgba(0,150,0,1);
+}
+p.alert-level-limit {
+    color: rgba(255,150,0,1);
+}
+p.alert-level-full {
+    color: rgba(150,0,0,1);
+}
+
+.TimeLineContainer {
+    display: block;
+    min-width: 20rem;
+    text-align: center;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+    background: rgba(0,0,0,1);
+    color: rgba(255,255,255,1);
+    text-transform: uppercase;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+    background: rgba(240,240,240,1);
+}
+
+span.YoungBiker {
+    display: inline-block;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba(255,255,255,1);
+    color: rgba(150,0,0,1);
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    line-height: 3rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-left: 1rem;
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,1);
+    cursor: pointer;
+}

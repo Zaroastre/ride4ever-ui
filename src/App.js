@@ -39,18 +39,20 @@ import NotFoundPage from './pages/notFoundPage';
 import './App.css';
 import reservationPage from './pages/reservationPage';
 import ReservationService from './services/reservationService';
+import roadTripAdminPage from './pages/roadTripAdminPage';
 
+/**
+ * Ride 4 Ever Main Component.
+ * @returns React Component.
+ */
 function App({
   setReservationsInStore,
   setToastInStore,
   resetToastInStore,
 }) {
+  // Properties / fields / state of the component.
   const toast = useRef(null);
-
-  // const cookies = useCookies();
-
   const biker = useSelector((state) => state.biker.people);
-  // const reservations = useSelector((state) => state.reservations.list);
 
   useEffect(() => {
     if (biker) {
@@ -98,19 +100,11 @@ function App({
     }
   }, [biker, setReservationsInStore, setToastInStore, resetToastInStore]);
 
-  // const items = [
-  //   { label: 'DashBoard', url: '/dashboard' },
-  //   { label: 'Roadtrips', url: '/explore' },
-  //   { label: 'Search' },
-  // ];
-  // const home = { icon: 'pi pi-home', url: '/' }
-
   return (
     <>
       <Toast ref={toast} />
       <Header />
       <main>
-        {/* <BreadCrumb model={items} home={home} /> */}
         <Switch>
           <Route exact path="/" component={IntroPage} />
           <Route exact path="/explore" component={HomePage} />
@@ -123,6 +117,7 @@ function App({
           <Route exact path="/profile" component={ProfilePage} />
           <Route exact path="/dashboard" component={DashboardPage} />
           <Route exact path="/reservation" component={reservationPage} />
+          <Route exact path="/admin" component={roadTripAdminPage} />
           <Route path="/roadtrips/:roadtripIdentifier" component={RoadTripPage} />
           <Route path="/*" component={NotFoundPage} />
         </Switch>

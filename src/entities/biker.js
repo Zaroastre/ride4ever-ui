@@ -1,3 +1,5 @@
+import Reservation from "./reservation";
+// import RoadTrip from "./roadtrip";
 export default class Biker {
   constructor() {
     this.identifier = 0;
@@ -25,6 +27,7 @@ export default class Biker {
     this.isTrainedForFirstRescue = false;
     this.hadAllreadyRideWithPassenger = false;
     // this.motorbikes = [];
+    this.reservations = [];
   }
 
   static parse(json) {
@@ -45,7 +48,7 @@ export default class Biker {
         entity.pseudo = json.pseudo;
         entity.birthDate = new Date(json.birthDate);
         entity.registrationDate = new Date(json.registrationDate);
-        entity.driverLicenceDate = json.driverLicenceDate;
+        entity.driverLicenceDate = new Date(json.driverLicenceDate);
         entity.gender = json.gender;
         entity.email = json.email;
         entity.phoneNumber = json.phoneNumber;
@@ -68,6 +71,11 @@ export default class Biker {
         //     entity.motorbikes.push(Motorbike.parse(json.motorbikes[index]));
         //   }
         // }
+        if (json.reservations instanceof Array) {
+          for (let index = 0; index < json.reservations.length; index += 1) {
+            entity.reservations.push(Reservation.parse(json.reservations[index]));
+          }
+        }
       }
     }
     return entity;

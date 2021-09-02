@@ -70,7 +70,6 @@ function RoadTripForm({
           address.state = data.results[0].components.state.toUpperCase();
           address.country = data.results[0].components.country.toUpperCase();
         }).catch((exception) => {
-          console.log(exception);
           setToastInStore({
             severity: 'error',
             summary: 'Coordinates Lookup Failure',
@@ -197,47 +196,36 @@ function RoadTripForm({
   };
 
   const isButtonDisabled = () => {
-    console.log('c1');
     if (!roadtrip.title || roadtrip.title.length < 5) {
       return true;
     }
-    console.log('c1');
     if (!roadtrip.description || roadtrip.description.length < 5) {
       return true;
     }
-    console.log('c1');
     if (!roadtrip.maxBikers || roadtrip.maxBikers < 1) {
       return true;
     }
-    console.log('c1');
     if (!startAddress.street || startAddress.street.length < 2) {
       return true;
     }
-    console.log('c1');
     if (!startAddress.zipCode || startAddress.zipCode < 0) {
       return true;
     }
-    console.log('c1');
     if (!startAddress.city || startAddress.city.length < 2) {
       return true;
     }
-    console.log('c1');
     if (!startAddress.country || startAddress.country.length < 2) {
       return true;
     }
-    console.log('c1');
     if (!roadtrip.startDate || roadtrip.startDate.length < 2) {
       return true;
     }
-    console.log('c1');
     if (!roadtrip.endDate || roadtrip.endDate.length < 2) {
       return true;
     }
-    console.log('c1');
     if (roadtrip.endDate < roadtrip.startDate) {
       return true;
     }
-    console.log('c1');
     return false;
   }
 

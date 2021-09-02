@@ -21,7 +21,6 @@ function SearchPage() {
     if (biker) {
       const SERVICE = new RoadtripService();
       SERVICE.findRoadtrips().then((array) => {
-        console.log(array);
         setRoadTrips(array);
         const RESERVATION_SERVICE = new ReservationService();
         RESERVATION_SERVICE.findReservations({ biker_pseudo: biker.pseudo }).then((list) => {
@@ -36,12 +35,6 @@ function SearchPage() {
       history.push('/login');
     }
   }, [biker, history, setRoadTrips]);
-
-  /* const onSearchHandle = (searchQuery) => {
-    setRoadTrips([]);
-    console.log(search);
-    console.log(searchQuery);
-  }; */
 
   return (
     <section className="Page Page-SearchPage">

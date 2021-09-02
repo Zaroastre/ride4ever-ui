@@ -1,11 +1,13 @@
 import Biker from "./biker";
 import RoadTrip from "./roadtrip";
+import Motorbike from "./motorbike";
 
 export default class Reservation {
   constructor() {
     this.identifier = 0;
     this.biker = null;
     this.roadTrip = null;
+    this.motorbike = null;
     this.date = new Date();
     this.status = null;
   }
@@ -25,6 +27,7 @@ export default class Reservation {
         entity.identifier = json.identifier;
         entity.biker = Biker.parse(json.biker);
         entity.roadTrip = RoadTrip.parse(json.roadTrip);
+        entity.motorbike = Motorbike.parse(json.motorbike);
         entity.date = new Date(json.date);
         entity.status = json.status;
       }

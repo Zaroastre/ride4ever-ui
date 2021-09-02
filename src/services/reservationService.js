@@ -32,6 +32,26 @@ export default class ReservationService {
     });
   }
 
+  update(identifier, entity) {
+    return new Promise((resolve, reject) => {
+      if (entity instanceof Reservation) {
+        axios.put(String(this.url).concat('/').concat(identifier), entity, { headers: this.headers })
+          .then((response) => {
+            resolve(Reservation.parse(response.data));
+          })
+          .catch((exception) => {
+            if (exception.response === undefined) {
+              reject('Server is unreachable.');
+            } else {
+              reject(exception.response.data.error);
+            }
+          });
+      } else {
+        reject('Invalid data type for data \'reservation\'.');
+      }
+    });
+  }
+
   findReservations(filters = null) {
     return new Promise((resolve, reject) => {
       axios.get(String(this.url), { headers: this.headers, params: filters })
@@ -74,11 +94,7 @@ export default class ReservationService {
   }
 
   delete(reservation) {
-    console.log(reservation);
     return new Promise((resolve, reject) => {
-      console.log(reservation);
-      console.log(new Reservation());
-      console.log(reservation instanceof Reservation);
       if (reservation instanceof Reservation) {
         axios.delete(String(this.url).concat('/').concat(reservation.identifier), { headers: this.headers })
           .then(() => {
