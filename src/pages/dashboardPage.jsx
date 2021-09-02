@@ -38,8 +38,9 @@ function DashboardPage({
           });
           resetToastInStore();
         });
-        ROADTRIP_SERVICE.findRoadtrips({ biker_pseudo: biker.pseudo, status: 'SOON' })
-        .then((roadTrips) => {
+        RESERVATION_SERVICE.findReservations({ biker_pseudo: biker.pseudo, status: 'ACCEPTED' })
+        .then((reservations) => {
+          const roadTrips = reservations.filter((reservation) => reservation.roadTrip.status === 'SOON').map((reservation) => reservation.roadTrip);
           setUpcomingRoadTrips(roadTrips);
         }).catch((exception) => {
           setToastInStore({

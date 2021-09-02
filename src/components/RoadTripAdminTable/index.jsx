@@ -15,18 +15,19 @@ import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
 import { Message } from 'primereact/message';
 import { Timeline } from 'primereact/timeline';
+import { confirmDialog } from 'primereact/confirmdialog';
 
 import Reservation from '../../entities/reservation';
 import { setToast, resetToast } from '../../store/toast/toastAction';
 import { setReservations } from '../../store/reservation/reservationAction';
 
-import './style.css';
 import { Link } from 'react-router-dom';
 import ReservationService from '../../services/reservationService';
 import RoadtripService from '../../services/roadtripService';
 import RegistrationStatus from '../../enumerations/registrationStatus';
+import './style.css';
 
-function RoadTripList({
+function RoadTripAdminTable({
   biker,
   roadtrips,
   reservations,
@@ -38,16 +39,18 @@ function RoadTripList({
   const reservationsInStore = useSelector((state) => state.reservations.list);
   const [roadTripsList, setRoadTripsList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [expandedRows, setExpandedRows] = useState(null);
 
   useEffect(() => {
     setIsLoading(true);
     const list = [];
     for (let i = 0; i < roadtrips.length; i++) {
       const roadtrip = { ...roadtrips[i] };
+      roadtrip.reservations = [];
       for (let j = 0; j < reservationsInStore.length; j++) {
         const reservation = { ...reservationsInStore[j] };
         if (reservation.roadTrip.identifier === roadtrip.identifier) {
-          roadtrip['reservation'] = reservation;
+          roadtrip.reservations.push(reservation);
         }
       }
       list.push(roadtrip);
@@ -168,10 +171,13 @@ function RoadTripList({
       return (
         <>
           <p className={classNameCandidates}>
-            {String('Candidates: ').concat(/* roadtrip.candidates.length */ -1).concat('/').concat(roadtrip.maxBikers)}
+            {String('Candidates: ').concat(/* roadtrip.candidates.length */ -1).concat('/').concat((roadtrip.maxBikers) != 10 ? roadtrip.maxBikers : '')}
+            {
+              (roadtrip.maxBikers) == 10 ? (<span>&infin;</span>) : (null)
+            }
           </p>
           <p className={classNameBikers}>
-            {String('Bikers: ').concat(/* roadtrip.bikers.length */ -1).concat('/').concat(roadtrip.maxBikers)}
+            {String('Bikers: ').concat(/* roadtrip.bikers.length */ -1).concat('/').concat((roadtrip.maxBikers) != 10 ? roadtrip.maxBikers : <span>&#8734;</span>)}
           </p>
         </>
       );
@@ -208,7 +214,7 @@ function RoadTripList({
           .concat('), ')
           .concat(roadtrip.startAddress.country),
         date: formatDate(roadtrip.startDate),
-      },{
+      }, {
         place: String(roadtrip.stopAddress.city)
           .concat(' (')
           .concat(roadtrip.stopAddress.zipCode)
@@ -224,6 +230,110 @@ function RoadTripList({
     );
   };
 
+  const onRowExpand = (event) => {
+    
+  }
+
+  const onRowCollapse = (event) => {
+    
+  }
+
+  const decline = (reservation) => {
+    reservation.status = 'DENIED';
+    const SERVICE = new ReservationService();
+    SERVICE.update(reservation.identifier, Reservation.parse(reservation)).then((updatedReservation) => {
+      console.log('Updated');
+    }).catch((exception) => {
+      setToastInStore({
+        severity: 'error',
+        summary: 'Reservation Decline Failure',
+        detail: exception,
+      });
+      resetToastInStore();
+    });
+  }
+
+  const accept = (reservation) => {
+    reservation.status = 'ACCEPTED';
+    const SERVICE = new ReservationService();
+    SERVICE.update(reservation.identifier, Reservation.parse(reservation)).then((updatedReservation) => {
+      console.log('Updated');
+    }).catch((exception) => {
+      setToastInStore({
+        severity: 'error',
+        summary: 'Reservation Decline Failure',
+        detail: exception,
+      });
+      resetToastInStore();
+    });
+  }
+
+  const declineHandle = (reservation) => {
+    // del reservation.roadTrips
+    confirmDialog({
+      message: 'Are you sure you want to decline this biker ?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => decline(reservation),
+    });
+  }
+
+  const acceptHandle = (reservation) => {
+    confirmDialog({
+      message: 'Are you sure you want to accept this biker ?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => accept(reservation),
+    });
+  }
+  const reservationActions = (data) => {
+    return (
+      <>
+        <Button icon="pi pi-ban" label="Decline" className="p-button-danger" onClick={() => declineHandle(data)} />
+        <Button icon="pi pi-check" label="Accept" className="p-button-success" onClick={() => acceptHandle(data)} />
+      </>
+    );
+  }
+
+  const computeAge = (date) => {
+    const month_diff = Date.now() - date.getTime();
+    const age_dt = new Date(month_diff);
+    const year = age_dt.getUTCFullYear();
+    const age = Math.abs(year - 1970);
+    return age;
+  }
+
+  const ageTemplate = (data) => {
+    return computeAge(data.biker.birthDate);
+  }
+  const experienceTemplate = (data) => {
+    const year = computeAge(data.biker.driverLicenceDate);
+    if (year < 2) {
+      return (
+        <>
+          { year }
+          <span className="YoungBiker">A2</span>
+        </>
+      )
+    }
+    return year;
+  }
+
+  const rowExpansionTemplate = (data) => {
+    return (
+      <div className="orders-subtable">
+        <h5>Reservations</h5>
+        <DataTable value={data.reservations}>
+          <Column field="biker.pseudo" header="Biker" sortable />
+          <Column header="Age" body={ageTemplate} sortable />
+          <Column header="Experience" body={experienceTemplate} sortable />
+          <Column field="biker.pseudo" header="Moto" sortable />
+          <Column field="biker.pseudo" header="Pseudo" sortable />
+          <Column header="Actions" body={reservationActions} />
+        </DataTable>
+      </div>
+    );
+  }
   return (
     <div className="Component Component-RoadTripList">
       <div className="card">
@@ -234,15 +344,16 @@ function RoadTripList({
           className="p-datatable-customers"
           emptyMessage="No road trips found."
           removableSort
-          selectionMode="single"
           loading={isLoading}
+          expandedRows={expandedRows}
+          onRowToggle={(e) => setExpandedRows(e.data)}
+          onRowExpand={onRowExpand}
+          onRowCollapse={onRowCollapse}
+          rowExpansionTemplate={rowExpansionTemplate}
+          dataKey="identifier"
         >
-          <Column style={{ width: '22rem' }} header="Trip" body={tripTemplate} sortable />
-          {/* <Column field="startDate" header="Start Date" body={startDateTemplate} sortable />
-          <Column field="endDate" header="End Date" body={stopDateTemplate} sortable />
-          <Column field="startAddress" header="Start City" body={startCityTemplate} sortable />
-          <Column field="stopAddress" header="Stop City" body={stopCityTemplate} sortable />
-          <Column field="KilometersAverage" header="Distance" sortable /> */}
+          <Column expander style={{ width: '3em' }} />
+          <Column field="title" header="Title" />
           <Column field="status" header="Status" body={statusTemplate} sortable />
           <Column field="maxBikers" header="Max Bikers" body={maxBikersTemplate} sortable />
           <Column field="roadTripType" header="Type" body={roadTripTypeTemplate} sortable />
@@ -251,6 +362,7 @@ function RoadTripList({
             <Column header="Reservation" body={joinTemplate} />
           ) : (null)
           }
+          <Column header="Delete" />
 
         </DataTable>
         {/* {(enableReservation) ? (
@@ -268,4 +380,4 @@ const mapDispatchToProps = (dispatch) => ({
   setReservationsInStore: (list) => dispatch(setReservations(list)),
 });
 
-export default withRouter(connect(null, mapDispatchToProps)(RoadTripList));
+export default withRouter(connect(null, mapDispatchToProps)(RoadTripAdminTable));

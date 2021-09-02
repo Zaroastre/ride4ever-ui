@@ -36,7 +36,6 @@ function ProfileTabPanel({
   const updateBikerAddress = (postalAddress) => {
     const SERVICE = new BikerService();
     if (biker && postalAddress) {
-      console.log(postalAddress);
       biker.address = postalAddress;
       SERVICE.update(biker.identifier, biker).then((updatedBiker) => {
         setBikerInStore(updatedBiker);

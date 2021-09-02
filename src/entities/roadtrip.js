@@ -8,7 +8,7 @@ export default class RoadTrip {
     this.description = null;
     this.organizer = null;
     this.maxBikers = 1;
-    this.candidates = [];
+    // this.candidates = [];
     this.bikers = [];
     this.roadTripType = null;
     this.startDate = new Date();

@@ -99,7 +99,6 @@ function PostalAddressForm({
           setPostalAddress(locatedAddress);
         }
       }).catch((exception) => {
-        console.log(exception);
         setToastInStore({
           severity: 'error',
           summary: 'Coordinates Lookup Failure',

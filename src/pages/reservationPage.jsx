@@ -37,7 +37,6 @@ function ReservationPage({
   }, [setReservationsInStore, history, biker, resetToastInStore, setToastInStore]);
 
   const render = () => {
-    console.log(reservations);
     if (biker && biker) {
       return (
         <section className="Page Page-Reservation">

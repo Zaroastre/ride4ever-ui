@@ -45,7 +45,7 @@ function DashBoard({
             footer={footerTemplate(
               organizedRoadTrips,
               DICTIONARY.PAGE.DASHBOARD.ORGANIZED_ROADTRIPS.BUTTON.OPTION_1[language],
-              '/tbd',
+              '/admin',
               DICTIONARY.PAGE.DASHBOARD.ORGANIZED_ROADTRIPS.BUTTON.OPTION_2[language],
               '/organize',
             )}
