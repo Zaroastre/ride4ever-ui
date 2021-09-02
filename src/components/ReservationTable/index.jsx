@@ -68,7 +68,24 @@ function ReservationTable({
     });
   }
   const dateTemplate = (reservation) => reservation.date.toLocaleString();
-  const statusTemplate = (reservation) => <Tag className={String('Tag-Event-').concat(reservation.status)} value={reservation.status} />;
+  const statusTemplate = (reservation) => {
+    let severity = 'info';
+    switch (reservation.status) {
+      case 'PENDING':
+        severity='warning';
+        break;
+        case 'ACCEPTED':
+          severity='success';
+          break;
+          case 'DENIED':
+            severity='danger';
+            break;
+  
+      default:
+        break;
+    }
+    return (<Tag className={String('Tag-Event-').concat(reservation.status)} value={reservation.status} severity={severity} />);
+  }
   const cancelTemplate = (reservation) => <Button label="Cancel" onClick={(event) => cancelReservationHandle(event, reservation)} className="p-button p-button-danger" icon="pi pi-trash" />
   return (
     <div className="Component Component-ReservationTable">
@@ -87,7 +104,6 @@ function ReservationTable({
         >
           <Column field="identifier" header="Reference" />
           <Column field="date" body={dateTemplate} header="Date" sortable />
-          <Column field="status" body={statusTemplate} header="Status" />
           <Column field="status" body={statusTemplate} header="Status" />
           <Column field="status" body={cancelTemplate} header="Cancel" />
         </DataTable>

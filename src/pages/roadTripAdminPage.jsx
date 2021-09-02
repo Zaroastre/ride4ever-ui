@@ -27,14 +27,14 @@ import RoadTripAdminTable from '../components/RoadTripAdminTable';
         const RESERVATION_SERVICE = new ReservationService();
 
 
-        RESERVATION_SERVICE.findReservations({ biker_organizer_pseudo: biker.pseudo }).then((list) => {
+        RESERVATION_SERVICE.findReservations({ roadtrip_organizer_pseudo: biker.pseudo }).then((list) => {
             setReservations(list);
             ROADTRIP_SERVICE.findRoadtrips({ organizer_pseudo: biker.pseudo }).then((list) => {
                 setRoadTrips(list);
             }).catch((exception) => {
               setToastInStore({
                 severity: 'error',
-                summary: 'Data Provisionning Failure',
+                summary: 'Roadtrips Provisionning Failure',
                 detail: exception,
               });
               resetToastInStore();
@@ -42,7 +42,7 @@ import RoadTripAdminTable from '../components/RoadTripAdminTable';
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
-            summary: 'Data Provisionning Failure',
+            summary: 'Reservations Provisionning Failure',
             detail: exception,
           });
           resetToastInStore();
@@ -56,6 +56,7 @@ import RoadTripAdminTable from '../components/RoadTripAdminTable';
       if (biker && biker) {
         return (
           <section className="Page Page-Reservation">
+            <h1>Road Trip Administration</h1>
             <RoadTripAdminTable roadtrips={roadTrips} reservations={reservations} />
           </section>
         );

@@ -44,11 +44,11 @@ function RoadTripAdminTable({
   useEffect(() => {
     setIsLoading(true);
     const list = [];
-    for (let i = 0; i < roadtrips.length; i++) {
+    for (let i = 0; i < roadtrips.length; i += 1) {
       const roadtrip = { ...roadtrips[i] };
       roadtrip.reservations = [];
-      for (let j = 0; j < reservationsInStore.length; j++) {
-        const reservation = { ...reservationsInStore[j] };
+      for (let j = 0; j < reservations.length; j += 1) {
+        const reservation = { ...reservations[j] };
         if (reservation.roadTrip.identifier === roadtrip.identifier) {
           roadtrip.reservations.push(reservation);
         }
@@ -57,7 +57,7 @@ function RoadTripAdminTable({
     }
     setRoadTripsList(list);
     setIsLoading(false);
-  }, [roadtrips, reservationsInStore, setRoadTripsList]);
+  }, [roadtrips, reservations, reservationsInStore, setRoadTripsList]);
 
 
   const roadTripTypeTemplate = (roadtrip) => {
@@ -171,13 +171,13 @@ function RoadTripAdminTable({
       return (
         <>
           <p className={classNameCandidates}>
-            {String('Candidates: ').concat(/* roadtrip.candidates.length */ -1).concat('/').concat((roadtrip.maxBikers) != 10 ? roadtrip.maxBikers : '')}
+            {String('Candidates: ').concat(/* roadtrip.candidates.length */ -1).concat('/').concat((roadtrip.maxBikers) !== 10 ? roadtrip.maxBikers : '')}
             {
-              (roadtrip.maxBikers) == 10 ? (<span>&infin;</span>) : (null)
+              (roadtrip.maxBikers) === 10 ? (<span>&infin;</span>) : (null)
             }
           </p>
           <p className={classNameBikers}>
-            {String('Bikers: ').concat(/* roadtrip.bikers.length */ -1).concat('/').concat((roadtrip.maxBikers) != 10 ? roadtrip.maxBikers : <span>&#8734;</span>)}
+            {String('Bikers: ').concat(/* roadtrip.bikers.length */ -1).concat('/').concat((roadtrip.maxBikers) !== 10 ? roadtrip.maxBikers : <span>&#8734;</span>)}
           </p>
         </>
       );
@@ -231,11 +231,11 @@ function RoadTripAdminTable({
   };
 
   const onRowExpand = (event) => {
-    
+
   }
 
   const onRowCollapse = (event) => {
-    
+
   }
 
   const decline = (reservation) => {
@@ -270,6 +270,7 @@ function RoadTripAdminTable({
 
   const declineHandle = (reservation) => {
     // del reservation.roadTrips
+    console.log(reservation);
     confirmDialog({
       message: 'Are you sure you want to decline this biker ?',
       header: 'Confirmation',
@@ -289,8 +290,12 @@ function RoadTripAdminTable({
   const reservationActions = (data) => {
     return (
       <>
-        <Button icon="pi pi-ban" label="Decline" className="p-button-danger" onClick={() => declineHandle(data)} />
-        <Button icon="pi pi-check" label="Accept" className="p-button-success" onClick={() => acceptHandle(data)} />
+        {(data.status === 'PENDING' || data.status === 'ACCEPTED') ? (
+          <Button icon="pi pi-ban" label="Decline" className="p-button-danger" onClick={() => declineHandle(data)} />
+        ) : (null)}
+        {(data.status === 'PENDING' || data.status === 'DENIED') ? (
+          <Button icon="pi pi-check" label="Accept" className="p-button-success" onClick={() => acceptHandle(data)} />
+        ) : (null)}
       </>
     );
   }
@@ -307,11 +312,12 @@ function RoadTripAdminTable({
     return computeAge(data.biker.birthDate);
   }
   const experienceTemplate = (data) => {
+    console.log(data.biker.driverLicenceDate);
     const year = computeAge(data.biker.driverLicenceDate);
     if (year < 2) {
       return (
         <>
-          { year }
+          {year}
           <span className="YoungBiker">A2</span>
         </>
       )
@@ -319,6 +325,20 @@ function RoadTripAdminTable({
     return year;
   }
 
+  const firstRescueTemplate = (data) => {
+    console.log(data.biker.isTrainedForFirstRescue);
+    if (data.biker.isTrainedForFirstRescue) {
+      return (<Tag icon="pi pi-heart" />);
+    }
+    return (null);
+  }
+
+  const canRepairTemplate = (data) => {
+    if (data.biker.canRepairMotorbike) {
+      return (<Tag icon="pi pi-cog" />);
+    }
+    return (null);
+  }
   const rowExpansionTemplate = (data) => {
     return (
       <div className="orders-subtable">
@@ -327,13 +347,21 @@ function RoadTripAdminTable({
           <Column field="biker.pseudo" header="Biker" sortable />
           <Column header="Age" body={ageTemplate} sortable />
           <Column header="Experience" body={experienceTemplate} sortable />
+          <Column header="First Rescue" body={firstRescueTemplate} sortable />
+          <Column header="Can Repair" body={canRepairTemplate} sortable />
           <Column field="biker.pseudo" header="Moto" sortable />
-          <Column field="biker.pseudo" header="Pseudo" sortable />
           <Column header="Actions" body={reservationActions} />
         </DataTable>
       </div>
     );
+  };
+
+  const deleteRoadtripHandle = (roadtrip) => {
+
   }
+
+  const deleteTemplate = (data) => <Button label="Delete" icon="pi pi-trash" className="p-button p-button-danger" onClick={() => deleteRoadtripHandle(data)} />
+
   return (
     <div className="Component Component-RoadTripList">
       <div className="card">
@@ -362,7 +390,7 @@ function RoadTripAdminTable({
             <Column header="Reservation" body={joinTemplate} />
           ) : (null)
           }
-          <Column header="Delete" />
+          <Column header="Delete" body={deleteTemplate} />
 
         </DataTable>
         {/* {(enableReservation) ? (

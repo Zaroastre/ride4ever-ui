@@ -33,7 +33,7 @@ function DashboardPage({
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
-            summary: 'Provisioning Failure',
+            summary: 'Roadtrips Provisioning Failure',
             detail: exception,
           });
           resetToastInStore();
@@ -45,7 +45,7 @@ function DashboardPage({
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
-            summary: 'Provisioning Failure',
+            summary: 'Reservations Provisioning Failure',
             detail: exception,
           });
           resetToastInStore();
@@ -56,7 +56,7 @@ function DashboardPage({
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
-            summary: 'Provisioning Failure',
+            summary: 'Reservation  Provisioning Failure',
             detail: exception,
           });
           resetToastInStore();
@@ -67,7 +67,7 @@ function DashboardPage({
         }).catch((exception) => {
           setToastInStore({
             severity: 'error',
-            summary: 'Provisioning Failure',
+            summary: 'Roadtrips Provisioning Failure Failure',
             detail: exception,
           });
           resetToastInStore();

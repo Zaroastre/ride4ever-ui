@@ -1,5 +1,4 @@
 /* eslint-disable import/prefer-default-export */
-import Biker from '../../entities/biker';
 import * as types from './bikerActionType';
 
 /**

@@ -9,7 +9,7 @@ export default class RoadTrip {
     this.organizer = null;
     this.maxBikers = 1;
     // this.candidates = [];
-    this.bikers = [];
+    // this.bikers = [];
     this.roadTripType = null;
     this.startDate = new Date();
     this.endDate = this.startDate;
@@ -37,8 +37,8 @@ export default class RoadTrip {
         entity.description = json.description;
         entity.organizer = Biker.parse(json.organizer);
         entity.maxBikers = json.maxBikers;
-        entity.candidates = json.candidates;
-        entity.bikers = json.bikers;
+        // entity.candidates = json.candidates;
+        // entity.bikers = json.bikers;
         entity.roadTripType = json.roadTripType;
         entity.status = json.status;
         entity.startDate = new Date(json.startDate);
